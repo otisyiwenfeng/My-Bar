@@ -1,0 +1,22 @@
+{
+  "name": "BarCraft - 专业调酒助手",
+  "short_name": "BarCraft",
+  "description": "调酒教学、配方管理、酒柜追踪",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a14",
+  "theme_color": "#c9a84c",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
