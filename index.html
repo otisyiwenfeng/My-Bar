@@ -1144,6 +1144,247 @@
     .cellar-empty .emoji { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
     .cellar-empty h3 { font-size: 16px; color: var(--text); margin-bottom: 8px; }
     .cellar-empty p { font-size: 13px; max-width: 320px; margin: 0 auto 20px; line-height: 1.6; }
+
+    /* ===== MOBILE RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      /* Show mobile header, hide desktop sidebar */
+      .sidebar { display: none; }
+      
+      body {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+      }
+
+      /* Mobile Header */
+      .main::before {
+        content: '🍸 BarCraft';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 16px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        font-size: 18px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--gold), var(--amber));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .main {
+        padding: 16px;
+        height: auto;
+        overflow: visible;
+      }
+
+      .page {
+        padding: 16px;
+        height: auto;
+        overflow: visible;
+      }
+
+      /* Stats grid - 2 columns */
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px;
+      }
+
+      /* Quick grid - 1 column */
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Tutorial grid - 1 column */
+      .tutorial-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Equipment grid - 2 columns */
+      .equip-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Inventory grid - 1 column */
+      .inv-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Recipe layout - stacked */
+      .recipe-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .recipe-detail-header {
+        flex-direction: column;
+      }
+
+      .recipe-detail-img {
+        width: 100%;
+        height: 120px;
+      }
+
+      .recipe-detail-name {
+        font-size: 20px;
+      }
+
+      /* Meta chips wrap */
+      .meta-row {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      /* Cost calculator - stacked */
+      .cost-calc-layout {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Cellar stats - 2 columns */
+      .cellar-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      /* Cellar grid - 1 column */
+      .cellar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Tables - horizontal scroll */
+      .ing-table, .cost-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      /* Form rows */
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      /* Topbar adjustment */
+      .topbar {
+        margin: -16px -16px 16px !important;
+        padding: 12px 16px !important;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .topbar-title {
+        font-size: 16px;
+      }
+
+      .topbar-actions {
+        flex-wrap: wrap;
+      }
+
+      /* Buttons - full width on mobile */
+      .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      .hero h2 {
+        font-size: 24px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      /* Modal */
+      .modal {
+        margin: 16px;
+        width: calc(100% - 32px);
+        max-height: 85vh;
+        overflow-y: auto;
+      }
+
+      /* Filter bar */
+      .cellar-filter-bar {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .filter-chip {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      /* Section titles */
+      .section-title {
+        font-size: 14px;
+        margin: 16px 0 12px;
+      }
+
+      /* Card padding */
+      .card {
+        padding: 16px;
+      }
+
+      .card-title {
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      /* Scroll areas */
+      .scroll-list {
+        max-height: none;
+        overflow: visible;
+      }
+
+      /* Footer */
+      .sidebar-footer {
+        display: none;
+      }
+
+      /* Nav items for mobile - bottom bar */
+      #mobile-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        padding: 8px 4px;
+        z-index: 100;
+        justify-content: space-around;
+      }
+
+      .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 6px 8px;
+        font-size: 10px;
+        color: var(--text-sub);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+        min-width: 50px;
+      }
+
+      .mobile-nav-item .nav-icon {
+        font-size: 18px;
+      }
+
+      .mobile-nav-item.active {
+        color: var(--gold);
+        background: rgba(201, 168, 76, 0.1);
+      }
+
+      /* Bottom padding for mobile nav */
+      .main {
+        padding-bottom: 80px;
+      }
+    }
+
+    /* Mobile nav (hidden by default) */
+    #mobile-nav {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -2074,25 +2315,31 @@
 
 </main>
 
-<script>
-// ============================
-//  PAGE NAVIGATION
-// ============================
-function showPage(name) {
-  // Hide all pages, show target page
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const targetPage = document.getElementById('page-' + name);
-  if (targetPage) targetPage.classList.add('active');
+<!-- MOBILE BOTTOM NAV -->
+<div id="mobile-nav">
+  <div class="mobile-nav-item active" data-page="home">
+    <span class="nav-icon">🏠</span>
+    <span>首页</span>
+  </div>
+  <div class="mobile-nav-item" data-page="cellar">
+    <span class="nav-icon">🏺</span>
+    <span>酒柜</span>
+  </div>
+  <div class="mobile-nav-item" data-page="recipes">
+    <span class="nav-icon">📋</span>
+    <span>酒单</span>
+  </div>
+  <div class="mobile-nav-item" data-page="tutorials">
+    <span class="nav-icon">🎓</span>
+    <span>教程</span>
+  </div>
+  <div class="mobile-nav-item" data-page="inventory">
+    <span class="nav-icon">📦</span>
+    <span>库存</span>
+  </div>
+</div>
 
-  // Update active nav item via data-page attribute
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const activeNav = document.querySelector('.nav-item[data-page="' + name + '"]');
-  if (activeNav) activeNav.classList.add('active');
 
-  // Page-specific init
-  if (name === 'recipes') renderRecipeDetail('negroni');
-  if (name === 'cellar') renderCellar();
-}
 
 // ============================
 //  TUTORIAL DETAIL
@@ -2423,6 +2670,39 @@ document.getElementById('main-nav').addEventListener('click', function(e) {
   const page = navItem.getAttribute('data-page');
   if (page) showPage(page);
 });
+
+// Mobile bottom nav
+document.getElementById('mobile-nav').addEventListener('click', function(e) {
+  const navItem = e.target.closest('.mobile-nav-item');
+  if (!navItem) return;
+  const page = navItem.getAttribute('data-page');
+  if (page) showPage(page);
+});
+
+// Update mobile nav active state when page changes
+function showPage(name) {
+  // Hide all pages, show target page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const targetPage = document.getElementById('page-' + name);
+  if (targetPage) targetPage.classList.add('active');
+
+  // Update active nav item via data-page attribute
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const activeNav = document.querySelector('.nav-item[data-page="' + name + '"]');
+  if (activeNav) activeNav.classList.add('active');
+
+  // Update mobile nav active state
+  document.querySelectorAll('.mobile-nav-item').forEach(n => n.classList.remove('active'));
+  const mobileNav = document.querySelector('.mobile-nav-item[data-page="' + name + '"]');
+  if (mobileNav) mobileNav.classList.add('active');
+
+  // Scroll to top
+  window.scrollTo(0, 0);
+
+  // Page-specific init
+  if (name === 'recipes') renderRecipeDetail('negroni');
+  if (name === 'cellar') renderCellar();
+}
 
 // ============================
 //  PWA: Service Worker
