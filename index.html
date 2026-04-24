@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BarCraft">
+  <meta name="theme-color" content="#c9a84c">
+  <link rel="manifest" href="manifest.json">
+  <title>BarCraft — 专业调酒助手</title>
+  <style>
+    :root {
+      --bg: #0f0e0c;
+      --surface: #1a1814;
+      --card: #211f1a;
+      --border: #2e2b24;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --amber: #e07b3a;
+      --text: #f0ead8;
+      --text-sub: #9a9080;
+      --text-muted: #5a5448;
+      --green: #4caf82;
+      --red: #e05050;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+    }
+
+    .logo {
+      padding: 0 20px 28px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .logo-name {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    nav {
+      flex: 1;
+      padding: 16px 12px;
+    }
+
+    .nav-section {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 8px;
+      margin: 16px 0 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-sub);
+      font-size: 14px;
+      transition: all 0.2s;
+      margin-bottom: 2px;
+      user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-item:hover { background: var(--card); color: var(--text); }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(224,123,58,0.1));
+      color: var(--gold-light);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ===== MAIN ===== */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg);
+    }
+
+    .main::-webkit-scrollbar { width: 6px; }
+    .main::-webkit-scrollbar-track { background: transparent; }
+    .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .page { display: none; padding: 32px; }
+    .page.active { display: block; }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .page-header p {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ===== HOME ===== */
+    .hero {
+      background: linear-gradient(135deg, #1a1510 0%, #231e15 50%, #1a1510 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12), transparent 70%);
+    }
+
+    .hero h2 {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--gold-light), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--text-sub);
+      font-size: 15px;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: #0f0e0c;
+    }
+
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+
+    .btn-outline:hover { background: rgba(201,168,76,0.1); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .quick-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-card:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.05);
+      transform: translateY(-2px);
+    }
+
+    .quick-icon { font-size: 28px; margin-bottom: 10px; }
+    .quick-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .quick-desc { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+    /* ===== TUTORIAL ===== */
+    .tutorial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .tutorial-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tutorial-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.1);
+    }
+
+    .tutorial-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #2a2520;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+
+    .tutorial-img-placeholder {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #2a2015, #1e1a10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .tutorial-img-placeholder .emoji { font-size: 48px; }
+    .tutorial-img-placeholder .img-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .img-gen-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(201,168,76,0.2);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold-light);
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+    }
+
+    .tutorial-body { padding: 16px; }
+    .tutorial-tag {
+      display: inline-block;
+      background: rgba(201,168,76,0.12);
+      color: var(--gold);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .tutorial-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .tutorial-desc { font-size: 12px; color: var(--text-sub); line-height: 1.5; }
+
+    .difficulty {
+      display: flex;
+      gap: 3px;
+      margin-top: 10px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .dot.on { background: var(--gold); }
+
+    /* ===== STEP TUTORIAL ===== */
+    .steps-container {
+      max-width: 760px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-item:last-child { border-bottom: none; }
+
+    .step-num {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--amber));
+      color: #0f0e0c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .step-content { flex: 1; }
+    .step-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step-desc { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+
+    .step-img-placeholder {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #231f16, #1a1610);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
+      border: 1px dashed var(--border);
+    }
+
+    .step-img-placeholder .emoji { font-size: 36px; }
+    .step-img-placeholder .label { font-size: 11px; color: var(--text-muted); }
+
+    /* ===== RECIPE / MENU ===== */
+    .recipe-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+    }
+
+    .recipe-list { }
+
+    .recipe-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      margin-bottom: 8px;
+    }
+
+    .recipe-item:hover { background: var(--card); border-color: var(--border); }
+    .recipe-item.active { background: var(--card); border-color: var(--gold); }
+
+    .recipe-emoji { font-size: 28px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--surface); border-radius: 8px; }
+
+    .recipe-info { flex: 1; }
+    .recipe-name { font-size: 14px; font-weight: 600; }
+    .recipe-category { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .recipe-cost {
+      text-align: right;
+    }
+    .cost-num { font-size: 14px; font-weight: 600; color: var(--gold); }
+    .cost-label { font-size: 10px; color: var(--text-muted); }
+
+    /* Recipe Detail */
+    .recipe-detail { }
+
+    .recipe-detail-header {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .recipe-detail-img {
+      width: 160px; height: 160px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2a2015, #1e1a10);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .recipe-detail-meta { flex: 1; }
+
+    .recipe-detail-name {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .recipe-detail-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .meta-chip-icon { font-size: 14px; }
+
+    /* Ingredients Table */
+    .ing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .ing-table th {
+      text-align: left;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 0 12px 10px;
+      border-bottom: 1px solid var(--border);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .ing-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(46,43,36,0.5);
+    }
+
+    .ing-table tr:last-child td { border-bottom: none; }
+
+    .ing-name { font-weight: 500; }
+    .ing-amount { color: var(--gold); font-weight: 600; }
+    .ing-price { color: var(--text-sub); }
+    .ing-subtotal { color: var(--text); font-weight: 600; }
+
+    /* Cost Summary */
+    .cost-summary {
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(224,123,58,0.05));
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .cost-row.total {
+      border-top: 1px solid rgba(201,168,76,0.3);
+      margin-top: 8px;
+      padding-top: 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .cost-row .label { color: var(--text-sub); }
+    .cost-row .value { color: var(--text); }
+    .cost-row.total .value { color: var(--gold-light); font-size: 22px; }
+
+    /* Steps */
+    .recipe-steps .step-item {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+    }
+
+    /* ===== INVENTORY ===== */
+    .inv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .inv-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .inv-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .inv-category { font-size: 10px; color: var(--text-muted); margin-bottom: 12px; }
+
+    .inv-stock {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .inv-amount { font-size: 20px; font-weight: 700; color: var(--gold); }
+    .inv-unit { font-size: 11px; color: var(--text-muted); }
+    .inv-price { font-size: 12px; color: var(--text-sub); }
+
+    .inv-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .inv-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--amber));
+    }
+
+    .inv-bar-fill.low { background: var(--red); }
+
+    .inv-warn {
+      font-size: 10px;
+      color: var(--red);
+      margin-top: 6px;
+    }
+
+    /* ===== TAG / BADGE ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-green { background: rgba(76,175,130,0.15); color: var(--green); }
+    .badge-red { background: rgba(224,80,80,0.15); color: var(--red); }
+    .badge-gold { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+    /* ===== SCROLLABLE LIST ===== */
+    .scroll-list {
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    .scroll-list::-webkit-scrollbar { width: 4px; }
+    .scroll-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* ===== SEARCH BAR ===== */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .search-bar input::placeholder { color: var(--text-muted); }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .topbar-actions { display: flex; gap: 8px; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 12px;
+    }
+
+    /* BACK BUTTON */
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-sub);
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    .back-btn:hover { color: var(--gold); }
+
+    /* ===== EQUIPMENT DETAIL ===== */
+    .equip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .equip-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .equip-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .equip-img {
+      width: 100%;
+      height: 140px;
+      background: linear-gradient(135deg, #231f16, #1a1610);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      gap: 6px;
+      position: relative;
+    }
+
+    .equip-img .label {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .equip-body { padding: 14px; }
+    .equip-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .equip-desc { font-size: 11px; color: var(--text-sub); line-height: 1.5; }
+
+    /* ===== WINE CELLAR ===== */
+    .cellar-hero {
+      background: linear-gradient(135deg, #14100a 0%, #1c1408 50%, #14100a 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .cellar-hero-left { flex: 1; }
+    .cellar-hero-left h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .cellar-hero-left p {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .cellar-total {
+      text-align: right;
+    }
+    .cellar-total-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .cellar-total-value {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold-light), var(--amber));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .cellar-total-sub {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .cellar-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .cellar-stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cellar-stat-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .cellar-stat-info {}
+    .cellar-stat-num {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .cellar-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .cellar-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .filter-chip {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      background: var(--card);
+      transition: all 0.15s;
+    }
+    .filter-chip:hover { border-color: var(--gold); color: var(--gold); }
+    .filter-chip.active {
+      background: rgba(201,168,76,0.15);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .cellar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .cellar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+    .cellar-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .cellar-card-img {
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(135deg, #1e1a10, #14100a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cellar-card-img::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(transparent, var(--card));
+    }
+    .cellar-card-img .bottle-emoji {
+      font-size: 64px;
+      filter: drop-shadow(0 4px 16px rgba(201,168,76,0.3));
+    }
+
+    .cellar-card-badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .cellar-card-actions {
+      position: absolute;
+      top: 8px; right: 8px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .cellar-card:hover .cellar-card-actions { opacity: 1; }
+    .cellar-card-actions button {
+      width: 26px; height: 26px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .cellar-card-actions .edit-btn { background: rgba(0,0,0,0.5); }
+    .cellar-card-actions .del-btn { background: rgba(224,80,80,0.3); }
+    .cellar-card-actions .edit-btn:hover { background: rgba(201,168,76,0.5); }
+    .cellar-card-actions .del-btn:hover { background: rgba(224,80,80,0.5); }
+
+    .cellar-card-body { padding: 14px; }
+    .cellar-card-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .cellar-card-sub { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+
+    .cellar-card-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 8px;
+    }
+    .cellar-card-current-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .cellar-card-trend {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .trend-up { color: var(--green); }
+    .trend-down { color: var(--red); }
+    .trend-flat { color: var(--text-muted); }
+
+    .cellar-card-meta {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .cellar-card-meta .meta-tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+    }
+
+    .cellar-sparkline {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 36px;
+      margin-bottom: 8px;
+    }
+    .sparkline-bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      background: var(--gold);
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      min-width: 3px;
+    }
+    .sparkline-bar:last-child { opacity: 1; }
+    .sparkline-bar:hover { opacity: 1; }
+
+    .cellar-sparkline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .cellar-purchase-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+    }
+    .cellar-purchase-info .label { color: var(--text-muted); }
+    .cellar-purchase-info .gain {
+      font-weight: 600;
+      color: var(--green);
+    }
+    .cellar-purchase-info .loss {
+      font-weight: 600;
+      color: var(--red);
+    }
+
+    .cellar-source-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+    .source-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .source-auction { background: #7b9fe0; }
+    .source-dealer { background: var(--gold); }
+    .source-estimate { background: #9b8fd4; }
+
+    /* ===== ADD/EDIT MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+    .btn-danger {
+      background: rgba(224,80,80,0.15);
+      color: var(--red);
+      border: 1px solid rgba(224,80,80,0.3);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-danger:hover { background: rgba(224,80,80,0.25); }
+
+    /* ===== EMPTY STATE ===== */
+    .cellar-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-sub);
+    }
+    .cellar-empty .emoji { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+    .cellar-empty h3 { font-size: 16px; color: var(--text); margin-bottom: 8px; }
+    .cellar-empty p { font-size: 13px; max-width: 320px; margin: 0 auto 20px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">🍸</div>
+    <div class="logo-name">BarCraft</div>
+    <div class="logo-sub">专业调酒助手</div>
+  </div>
+  <nav id="main-nav">
+    <div class="nav-section">主菜单</div>
+    <div class="nav-item active" data-page="home">
+      <span class="nav-icon">🏠</span> 首页
+    </div>
+    <div class="nav-item" data-page="cellar">
+      <span class="nav-icon">🏺</span> 我的酒柜
+    </div>
+    <div class="nav-section">教学中心</div>
+    <div class="nav-item" data-page="tutorials">
+      <span class="nav-icon">🎓</span> 调酒教程
+    </div>
+    <div class="nav-item" data-page="equipment">
+      <span class="nav-icon">🔧</span> 器具指南
+    </div>
+    <div class="nav-section">酒单系统</div>
+    <div class="nav-item" data-page="recipes">
+      <span class="nav-icon">📋</span> 酒单配方
+    </div>
+    <div class="nav-item" data-page="inventory">
+      <span class="nav-icon">📦</span> 原料库存
+    </div>
+    <div class="nav-item" data-page="cost">
+      <span class="nav-icon">💰</span> 成本核算
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    v0.1 · Demo 版本
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ===== HOME PAGE ===== -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <h2>掌握调酒的艺术</h2>
+      <p>从基础手法到精致配方，从器具认知到成本管控——BarCraft 是你的专业调酒伙伴。图文并茂，步步精确。</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="showPage('tutorials')">开始学习</button>
+        <button class="btn btn-outline" onclick="showPage('recipes')">浏览酒单</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">24</div>
+        <div class="stat-label">款鸡尾酒配方</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">12</div>
+        <div class="stat-label">个调酒教程</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">38</div>
+        <div class="stat-label">种原料在库</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">8</div>
+        <div class="stat-label">件专业器具</div>
+      </div>
+    </div>
+
+    <div class="section-title">快速入口</div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showPage('tutorials')">
+        <div class="quick-icon">🥃</div>
+        <div class="quick-title">摇酒基础手法</div>
+        <div class="quick-desc">学会 Shake、Stir、Build 三大核心手法，搭配图解示范</div>
+      </div>
+      <div class="quick-card" onclick="showRecipeDetail('negroni')">
+        <div class="quick-icon">🍊</div>
+        <div class="quick-title">今日推荐 · 尼格罗尼</div>
+        <div class="quick-desc">经典三比一配方，成本 ¥28.5，建议售价 ¥88</div>
+      </div>
+      <div class="quick-card" onclick="showPage('inventory')">
+        <div class="quick-icon">⚠️</div>
+        <div class="quick-title">库存预警</div>
+        <div class="quick-desc">苦艾酒、青柠汁 库存偏低，点击查看并补货</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TUTORIALS PAGE ===== -->
+  <div id="page-tutorials" class="page">
+    <div class="topbar" style="margin: -32px -32px 28px; padding: 16px 32px;">
+      <div class="topbar-title">🎓 调酒教程</div>
+    </div>
+
+    <div class="section-title">调酒手法</div>
+    <div class="tutorial-grid" style="margin-bottom: 32px;">
+
+      <div class="tutorial-card" onclick="showTutorialDetail('shake')">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🥤</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">基础手法</div>
+          <div class="tutorial-name">Shake · 摇酒法</div>
+          <div class="tutorial-desc">用摇壶将原料与冰块快速混合，适合含果汁、糖浆的配方</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-card" onclick="showTutorialDetail('stir')">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🥄</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">基础手法</div>
+          <div class="tutorial-name">Stir · 搅拌法</div>
+          <div class="tutorial-desc">用吧匙在调酒杯中温柔搅拌，保留酒液清澈，适合纯烈酒配方</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-card" onclick="showTutorialDetail('build')">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🧊</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">基础手法</div>
+          <div class="tutorial-name">Build · 直调法</div>
+          <div class="tutorial-desc">直接在饮用杯中依次加入原料，最简单的调酒方式，如古典鸡尾酒</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">进阶技法</div>
+    <div class="tutorial-grid">
+      <div class="tutorial-card">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🔥</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">进阶技法</div>
+          <div class="tutorial-name">Flaming · 火焰装饰</div>
+          <div class="tutorial-desc">用橙皮精油点火喷焰，为鸡尾酒增添焦香风味与视觉冲击</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-card">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🧂</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">进阶技法</div>
+          <div class="tutorial-name">Rimming · 杯口装饰</div>
+          <div class="tutorial-desc">用盐、糖或香料为杯口挂边，增加风味层次，如玛格丽特盐边</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-card">
+        <div class="tutorial-img-placeholder">
+          <span class="emoji">🍋</span>
+          <span class="img-label">AI 图片演示</span>
+          <span class="img-gen-badge">✨ Images 2.0</span>
+        </div>
+        <div class="tutorial-body">
+          <div class="tutorial-tag">进阶技法</div>
+          <div class="tutorial-name">Garnish · 装饰技巧</div>
+          <div class="tutorial-desc">柠檬螺旋皮、樱桃穿签、薄荷束——让鸡尾酒颜值翻倍</div>
+          <div class="difficulty">
+            <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TUTORIAL DETAIL (hidden) ===== -->
+  <div id="page-tutorial-detail" class="page">
+    <div class="back-btn" onclick="showPage('tutorials')">← 返回教程列表</div>
+    <div id="tutorial-detail-content"></div>
+  </div>
+
+  <!-- ===== EQUIPMENT PAGE ===== -->
+  <div id="page-equipment" class="page">
+    <div class="topbar" style="margin: -32px -32px 28px; padding: 16px 32px;">
+      <div class="topbar-title">🔧 器具指南</div>
+    </div>
+
+    <div class="section-title">基础器具</div>
+    <div class="equip-grid">
+      <div class="equip-card">
+        <div class="equip-img">
+          🍶
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">波士顿摇壶</div>
+          <div class="equip-desc">由大小两杯扣合，专业酒吧标配，适合大量摇制</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          📏
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">量酒器 Jigger</div>
+          <div class="equip-desc">双头锥形量器，精确量取 15ml / 30ml / 45ml 用量</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🥄
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">吧匙 Bar Spoon</div>
+          <div class="equip-desc">长柄螺旋匙，用于搅拌调酒，末端可用于分层</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🫙
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">调酒杯 Mixing Glass</div>
+          <div class="equip-desc">厚壁玻璃杯，用于需要搅拌但不能摇晃的配方</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🕸️
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">霍桑过滤器</div>
+          <div class="equip-desc">弹簧网格设计，有效过滤冰块和果肉残渣</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🧱
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">捣棒 Muddler</div>
+          <div class="equip-desc">木制或不锈钢，用于捣压香草、水果释放风味</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🍊
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">柑橘榨汁器</div>
+          <div class="equip-desc">手动或电动，现榨鲜果汁是鸡尾酒品质的关键</div>
+        </div>
+      </div>
+
+      <div class="equip-card">
+        <div class="equip-img">
+          🧊
+          <span class="img-gen-badge" style="position:absolute;top:8px;right:8px;">✨ Images 2.0</span>
+          <span class="label">AI 图片演示</span>
+        </div>
+        <div class="equip-body">
+          <div class="equip-name">制冰模具</div>
+          <div class="equip-desc">大冰球、冰块模具，不同形状影响稀释速度与美观</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RECIPES PAGE ===== -->
+  <div id="page-recipes" class="page">
+    <div class="topbar" style="margin: -32px -32px 28px; padding: 16px 32px;">
+      <div class="topbar-title">📋 酒单配方</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" style="font-size:13px;padding:7px 14px;">+ 新建配方</button>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="搜索配方名称、基酒类型...">
+    </div>
+
+    <div class="recipe-layout">
+      <div class="recipe-list scroll-list">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;padding: 0 4px;">经典款 · 4 款</div>
+
+        <div class="recipe-item active" onclick="showRecipeDetail('negroni')">
+          <div class="recipe-emoji">🍊</div>
+          <div class="recipe-info">
+            <div class="recipe-name">尼格罗尼</div>
+            <div class="recipe-category">Negroni · 金酒基 · LCBO</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥9.8</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div class="recipe-item" onclick="showRecipeDetail('mojito')">
+          <div class="recipe-emoji">🌿</div>
+          <div class="recipe-info">
+            <div class="recipe-name">莫吉托</div>
+            <div class="recipe-category">Mojito · 朗姆基 · LCBO</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥12.0</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div class="recipe-item" onclick="showRecipeDetail('margarita')">
+          <div class="recipe-emoji">🍋</div>
+          <div class="recipe-info">
+            <div class="recipe-name">玛格丽特</div>
+            <div class="recipe-category">Margarita · 龙舌兰基 · LCBO</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥14.3</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div class="recipe-item">
+          <div class="recipe-emoji">🌅</div>
+          <div class="recipe-info">
+            <div class="recipe-name">特基拉日出</div>
+            <div class="recipe-category">Tequila Sunrise · 龙舌兰基</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥12.8</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--text-muted);margin: 16px 0 10px;padding: 0 4px;">流行款 · 3 款</div>
+
+        <div class="recipe-item">
+          <div class="recipe-emoji">🍓</div>
+          <div class="recipe-info">
+            <div class="recipe-name">草莓代基里</div>
+            <div class="recipe-category">Strawberry Daiquiri · 朗姆基</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥13.5</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div class="recipe-item">
+          <div class="recipe-emoji">☕</div>
+          <div class="recipe-info">
+            <div class="recipe-name">浓缩马天尼</div>
+            <div class="recipe-category">Espresso Martini · 伏特加基</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥10.5</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+
+        <div class="recipe-item">
+          <div class="recipe-emoji">🥭</div>
+          <div class="recipe-info">
+            <div class="recipe-name">芒果马天尼</div>
+            <div class="recipe-category">Mango Martini · 伏特加基</div>
+          </div>
+          <div class="recipe-cost">
+            <div class="cost-num">¥11.2</div>
+            <div class="cost-label">成本/杯</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECIPE DETAIL PANEL -->
+      <div class="recipe-detail" id="recipe-detail-panel">
+        <!-- Default: negroni -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== INVENTORY PAGE ===== -->
+  <div id="page-inventory" class="page">
+    <div class="topbar" style="margin: -32px -32px 28px; padding: 16px 32px;">
+      <div class="topbar-title">📦 原料库存</div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline" style="font-size:13px;padding:7px 14px;">导出报表</button>
+        <button class="btn btn-primary" style="font-size:13px;padding:7px 14px;">+ 录入入库</button>
+      </div>
+    </div>
+
+    <div class="stats-grid" style="grid-template-columns: repeat(3,1fr); max-width: 600px; margin-bottom: 24px;">
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:24px;">38</div>
+        <div class="stat-label">种原料在库</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:24px;color:var(--red);-webkit-text-fill-color:var(--red);">3</div>
+        <div class="stat-label">⚠️ 库存预警</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:24px;">¥4,280</div>
+        <div class="stat-label">库存总价值</div>
+      </div>
+    </div>
+
+    <div class="section-title">烈酒类</div>
+    <div class="inv-grid">
+      <div class="inv-card">
+        <div class="inv-name">Tanqueray 金酒</div>
+        <div class="inv-category">Tanqueray Dry Gin · LCBO $43.45/1140ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">760<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥230 / 瓶</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:76%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">Bacardi 白朗姆</div>
+        <div class="inv-category">Bacardi Superior · LCBO $29.30/750ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">1200<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥155 / 瓶</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:85%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">Jose Cuervo 龙舌兰</div>
+        <div class="inv-category">Jose Cuervo Especial Silver · LCBO $34.30/750ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">480<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥182 / 瓶</div>
+          </div>
+          <span class="badge badge-gold">一般</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:48%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">绝对伏特加</div>
+        <div class="inv-category">Absolut Vodka · 瑞典</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">950<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥148 / 瓶</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:67%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 24px;">利口酒 & 苦精</div>
+    <div class="inv-grid">
+      <div class="inv-card">
+        <div class="inv-name">Campari 苦酒</div>
+        <div class="inv-category">Campari Aperitivo · LCBO $34.80/750ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">640<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥178 / 瓶</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:64%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">Martini Rosso 苦艾酒</div>
+        <div class="inv-category">Martini & Rossi Rosso · LCBO $18.00/1000ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">180<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥95 / 瓶</div>
+          </div>
+          <span class="badge badge-red">偏低</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill low" style="width:18%"></div></div>
+        <div class="inv-warn">⚠️ 低于预警线，建议补货</div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">Cointreau 橙皮酒</div>
+        <div class="inv-category">Cointreau Liqueur · LCBO ~$36.00/750ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">520<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥191 / 瓶</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:52%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">Angostura 苦精</div>
+        <div class="inv-category">Angostura Bitters · LCBO $9.95/100ml</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">80<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥53 / 瓶</div>
+          </div>
+          <span class="badge badge-gold">一般</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:40%"></div></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 24px;">新鲜原料</div>
+    <div class="inv-grid">
+      <div class="inv-card">
+        <div class="inv-name">鲜榨青柠汁</div>
+        <div class="inv-category">Fresh Lime Juice</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">120<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥0.8 / ml</div>
+          </div>
+          <span class="badge badge-red">偏低</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill low" style="width:12%"></div></div>
+        <div class="inv-warn">⚠️ 建议今日补充</div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">薄荷叶</div>
+        <div class="inv-category">Fresh Mint</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">50<span class="inv-unit"> g</span></div>
+            <div class="inv-price">¥1.2 / g</div>
+          </div>
+          <span class="badge badge-gold">一般</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:33%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">蔗糖糖浆</div>
+        <div class="inv-category">Simple Syrup</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">800<span class="inv-unit"> ml</span></div>
+            <div class="inv-price">¥0.15 / ml</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:80%"></div></div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-name">橙子</div>
+        <div class="inv-category">Orange · 装饰 & 榨汁</div>
+        <div class="inv-stock">
+          <div>
+            <div class="inv-amount">8<span class="inv-unit"> 个</span></div>
+            <div class="inv-price">¥3.5 / 个</div>
+          </div>
+          <span class="badge badge-green">充足</span>
+        </div>
+        <div class="inv-bar"><div class="inv-bar-fill" style="width:53%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COST PAGE ===== -->
+  <div id="page-cost" class="page">
+    <div class="topbar" style="margin: -32px -32px 28px; padding: 16px 32px;">
+      <div class="topbar-title">💰 成本核算</div>
+    </div>
+
+    <div class="stats-grid" style="margin-bottom: 28px;">
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:22px;">¥12.1</div>
+        <div class="stat-label">平均单杯成本（LCBO）</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:22px;">4×</div>
+        <div class="stat-label">标准 markup</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:22px;">¥48</div>
+        <div class="stat-label">平均建议售价</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="font-size:22px;">75%</div>
+        <div class="stat-label">毛利率</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 各款酒成本对比（基于 LCBO 零售价，CAD × 5.3 汇率）</div>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">酒名</th>
+            <th style="text-align:left;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">基酒来源</th>
+            <th style="text-align:right;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">LCBO成本</th>
+            <th style="text-align:right;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">标准售价(4×)</th>
+            <th style="text-align:right;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">溢价售价(5×)</th>
+            <th style="text-align:center;padding:8px 12px;font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;">毛利率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:12px;font-weight:600;">🍊 尼格罗尼</td>
+            <td style="padding:12px;color:var(--text-sub);">Tanqueray + Campari + Martini</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥9.8</td>
+            <td style="padding:12px;text-align:right;">¥39</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥49</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:12px;font-weight:600;">🌿 莫吉托</td>
+            <td style="padding:12px;color:var(--text-sub);">Bacardi 白朗姆</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥12.0</td>
+            <td style="padding:12px;text-align:right;">¥48</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥60</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:12px;font-weight:600;">🍋 玛格丽特</td>
+            <td style="padding:12px;color:var(--text-sub);">Jose Cuervo + Cointreau</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥14.3</td>
+            <td style="padding:12px;text-align:right;">¥57</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥71</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:12px;font-weight:600;">🌅 特基拉日出</td>
+            <td style="padding:12px;color:var(--text-sub);">Jose Cuervo 龙舌兰</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥12.8</td>
+            <td style="padding:12px;text-align:right;">¥51</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥64</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:12px;font-weight:600;">🍓 草莓代基里</td>
+            <td style="padding:12px;color:var(--text-sub);">Bacardi 白朗姆</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥13.5</td>
+            <td style="padding:12px;text-align:right;">¥54</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥67</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+          <tr>
+            <td style="padding:12px;font-weight:600;">☕ 浓缩马天尼</td>
+            <td style="padding:12px;color:var(--text-sub);">Absolut/Smirnoff 伏特加</td>
+            <td style="padding:12px;text-align:right;color:var(--gold);font-weight:600;">¥10.5</td>
+            <td style="padding:12px;text-align:right;">¥42</td>
+            <td style="padding:12px;text-align:right;color:var(--text-sub);">¥53</td>
+            <td style="padding:12px;text-align:center;"><span class="badge badge-green">75%</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧮 单杯成本计算器</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:13px;color:var(--text-sub);margin-bottom:16px;">输入原料信息，实时计算成本</div>
+          <div id="calc-items">
+            <div class="calc-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+              <input style="flex:2;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;" placeholder="原料名称" value="Tanqueray 金酒 (LCBO $43.45/1140ml)">
+              <input id="c1-ml" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="ml" value="30" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">ml @</span>
+              <input id="c1-price" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="¥/ml" value="0.202" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">¥/ml</span>
+            </div>
+            <div class="calc-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+              <input style="flex:2;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;" placeholder="原料名称" value="Campari 苦酒 (LCBO $34.80/750ml)">
+              <input id="c2-ml" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="ml" value="30" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">ml @</span>
+              <input id="c2-price" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="¥/ml" value="0.246" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">¥/ml</span>
+            </div>
+            <div class="calc-row" style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+              <input style="flex:2;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;" placeholder="原料名称" value="Martini Rosso 苦艾 (LCBO $18.00/1000ml)">
+              <input id="c3-ml" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="ml" value="30" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">ml @</span>
+              <input id="c3-price" style="width:70px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;text-align:right;" placeholder="¥/ml" value="0.060" oninput="calcCost()">
+              <span style="font-size:12px;color:var(--text-muted);">¥/ml</span>
+            </div>
+          </div>
+          <button class="btn btn-outline" style="font-size:12px;padding:6px 12px;margin-top:8px;">+ 添加原料</button>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:16px;">计算结果</div>
+          <div style="margin-bottom:12px;">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">原料总成本</div>
+            <div id="result-cost" style="font-size:28px;font-weight:800;color:var(--gold);">¥19.6</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div style="background:var(--card);border-radius:6px;padding:10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">标准售价 (4× markup)</div>
+              <div id="result-suggest" style="font-size:16px;font-weight:700;color:var(--text);">¥38</div>
+            </div>
+            <div style="background:var(--card);border-radius:6px;padding:10px;">
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">溢价售价 (5× markup)</div>
+              <div id="result-premium" style="font-size:16px;font-weight:700;color:var(--text);">¥48</div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--border);margin-bottom:12px;"></div>
+          <div style="font-size:11px;color:var(--text-sub);line-height:1.7;">
+            💡 酒吧行业标准定价：<strong>markup 3-5×</strong><br>
+            高端酒吧可达 6-8×；快速酒吧 2-3×<br>
+            数据来源：LCBO 零售价（CAD × 5.3 汇率）
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== WINE CELLAR PAGE ===== -->
+  <div id="page-cellar" class="page">
+    <div class="topbar" style="margin: -32px -32px 0; padding: 16px 32px;">
+      <div class="topbar-title">🏺 我的酒柜</div>
+      <div class="topbar-actions">
+        <button class="btn btn-outline" style="font-size:13px;padding:7px 14px;" onclick="exportCellar()">📤 导出</button>
+        <button class="btn btn-primary" style="font-size:13px;padding:7px 14px;" onclick="openAddModal()">+ 录入藏酒</button>
+      </div>
+    </div>
+
+    <div style="padding: 0 0 32px;">
+
+      <div class="cellar-hero" style="margin-top: 24px;">
+        <div class="cellar-hero-left">
+          <h2>收藏组合总览</h2>
+          <p>实时追踪茅台、葡萄酒、威士忌等收藏酒的最新市场估值</p>
+          <div style="margin-top:10px;display:flex;gap:16px;font-size:11px;color:var(--text-muted);">
+            <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7b9fe0;margin-right:4px;vertical-align:middle;"></span>拍卖成交价</span>
+            <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle;"></span>回收商报价</span>
+            <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#9b8fd4;margin-right:4px;vertical-align:middle;"></span>综合估价</span>
+          </div>
+        </div>
+        <div class="cellar-total">
+          <div class="cellar-total-label">组合总估值</div>
+          <div class="cellar-total-value" id="cellar-total-value">¥0</div>
+          <div class="cellar-total-sub" id="cellar-total-sub">共 0 瓶 · 阿里拍卖 / 歌德老酒行 / 云酒说</div>
+        </div>
+      </div>
+
+      <div class="cellar-stats-row">
+        <div class="cellar-stat-card">
+          <div class="cellar-stat-icon" style="background:rgba(201,168,76,0.12);">🏺</div>
+          <div class="cellar-stat-info">
+            <div class="cellar-stat-num" id="cellar-count" style="color:var(--gold);">0</div>
+            <div class="cellar-stat-label">藏品数量</div>
+          </div>
+        </div>
+        <div class="cellar-stat-card">
+          <div class="cellar-stat-icon" style="background:rgba(76,175,130,0.12);">📈</div>
+          <div class="cellar-stat-info">
+            <div class="cellar-stat-num" id="cellar-gain" style="color:var(--green);">+¥0</div>
+            <div class="cellar-stat-label">浮盈 / 浮亏</div>
+          </div>
+        </div>
+        <div class="cellar-stat-card">
+          <div class="cellar-stat-icon" style="background:rgba(224,123,58,0.12);">💎</div>
+          <div class="cellar-stat-info">
+            <div class="cellar-stat-num" id="cellar-avg" style="color:var(--amber);">¥0</div>
+            <div class="cellar-stat-label">均价/瓶</div>
+          </div>
+        </div>
+        <div class="cellar-stat-card">
+          <div class="cellar-stat-icon" style="background:rgba(123,159,224,0.12);">🔍</div>
+          <div class="cellar-stat-info">
+            <div class="cellar-stat-num" style="color:#7b9fe0;font-size:14px;">多源</div>
+            <div class="cellar-stat-label">价格来源</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cellar-filter-bar">
+        <div class="filter-chip active" data-cat="all" onclick="filterCellar('all', this)">全部</div>
+        <div class="filter-chip" data-cat="maotai" onclick="filterCellar('maotai', this)">茅台</div>
+        <div class="filter-chip" data-cat="wine" onclick="filterCellar('wine', this)">葡萄酒</div>
+        <div class="filter-chip" data-cat="whisky" onclick="filterCellar('whisky', this)">威士忌</div>
+        <div class="filter-chip" data-cat="baijiu" onclick="filterCellar('baijiu', this)">其他白酒</div>
+        <div style="flex:1"></div>
+        <div style="font-size:12px;color:var(--text-muted);">⚠️ 数据仅供参考，实际成交价以市场为准</div>
+      </div>
+
+      <div class="cellar-grid" id="cellar-grid"></div>
+
+      <div class="card" style="margin-top:8px;">
+        <div class="card-title">📡 价格数据来源说明</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-size:12px;color:var(--text-sub);line-height:1.8;">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#7b9fe0;"></span>
+              <strong style="color:var(--text);">拍卖成交价</strong>
+            </div>
+            苏富比 / 嘉士德 / 阿里拍卖 · 最新场次落槌价，含买家佣金。数据实时更新，参考价值最高。
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);"></span>
+              <strong style="color:var(--text);">回收商报价</strong>
+            </div>
+            歌德老酒行 / 云酒说 / 老酒吧 · 实时回收商收购报价，非实际成交价，略低于市场价。
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#9b8fd4;"></span>
+              <strong style="color:var(--text);">综合估价</strong>
+            </div>
+            系统综合拍卖 + 回收商报价估算的建议零售价，介于买价与卖价之间，适合参考，不作为买卖依据。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== ADD/EDIT MODAL ===== -->
+  <div class="modal-overlay" id="cellar-modal">
+    <div class="modal">
+      <div class="modal-title" id="modal-title">➕ 录入新藏酒</div>
+
+      <div class="form-group">
+        <label class="form-label">酒款名称</label>
+        <input class="form-input" id="f-name" placeholder="如：飞天茅台53° 2021">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">品类</label>
+          <select class="form-select" id="f-category">
+            <option value="maotai">茅台</option>
+            <option value="wine">葡萄酒</option>
+            <option value="whisky">威士忌</option>
+            <option value="baijiu">其他白酒</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">年份</label>
+          <input class="form-input" id="f-vintage" placeholder="如：2021">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">入手价 (¥)</label>
+          <input class="form-input" id="f-purchase" placeholder="购入时的价格" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">数量 (瓶)</label>
+          <input class="form-input" id="f-qty" placeholder="1" type="number" value="1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">拍卖参考价 (¥)</label>
+          <input class="form-input" id="f-auction" placeholder="最新拍卖成交价" type="number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">回收商报价 (¥)</label>
+          <input class="form-input" id="f-dealer" placeholder="回收商收购报价" type="number">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">备注</label>
+        <input class="form-input" id="f-note" placeholder="如：阿里拍卖2024秋拍 · 苏富比">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" style="font-size:13px;padding:8px 16px;" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary" style="font-size:13px;padding:8px 16px;" onclick="saveBottle()">保存</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ============================
+//  PAGE NAVIGATION
+// ============================
+function showPage(name) {
+  // Hide all pages, show target page
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const targetPage = document.getElementById('page-' + name);
+  if (targetPage) targetPage.classList.add('active');
+
+  // Update active nav item via data-page attribute
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const activeNav = document.querySelector('.nav-item[data-page="' + name + '"]');
+  if (activeNav) activeNav.classList.add('active');
+
+  // Page-specific init
+  if (name === 'recipes') renderRecipeDetail('negroni');
+  if (name === 'cellar') renderCellar();
+}
+
+// ============================
+//  TUTORIAL DETAIL
+// ============================
+const tutorials = {
+  shake: {
+    name: 'Shake · 摇酒法',
+    tag: '基础手法',
+    desc: '摇酒是最常见、最具观赏性的调酒技法。通过快速摇动，使冰块与液体充分接触，同时稀释、降温、融合所有原料，产生细腻泡沫。',
+    steps: [
+      { title: '准备摇壶与冰块', desc: '向摇壶大壶部分加入 4-6 块标准冰块（约 120g），冰块要干净、无碎冰。冰越大，稀释越慢，风味越集中。', emoji: '🧊' },
+      { title: '量取原料依次加入', desc: '使用 Jigger 精确量取每种原料，按"烈度由低到高"的顺序加入：先加果汁、糖浆等辅料，最后加基酒。这样即使量错也容易处理。', emoji: '📏' },
+      { title: '扣合摇壶，检查密封', desc: '将小壶以 45° 角扣在大壶上，用手掌根部用力拍紧。翻转，用拇指堵住小壶底部出口，轻拉确认不漏液。', emoji: '🔒' },
+      { title: '正确握持姿势', desc: '双手握壶：惯用手拇指压住小壶底部，四指握住大壶；另一手从下方托住大壶底部。摇壶举到肩膀高度，与地面平行。', emoji: '🤝' },
+      { title: '摇动 12-15 秒', desc: '用手腕发力做"推拉"往复动作，而非绕圈。听到冰块撞击声变闷（冰开始融化）即可。含蛋清配方需先 Dry Shake（无冰摇30秒），再加冰摇。', emoji: '⏱️' },
+      { title: '过滤倒杯', desc: '用 Hawthorne 过滤器扣在大壶口，虎口朝上单手持壶倒出。需要极细腻口感时，再过一层细网筛（Fine Strainer）做双重过滤。', emoji: '🫗' },
+    ]
+  },
+  stir: {
+    name: 'Stir · 搅拌法',
+    tag: '基础手法',
+    desc: '搅拌法用于全烈酒或烈酒为主的配方（如马天尼、曼哈顿）。搅拌能稳定地混合、降温，同时保留酒液清澈度与丝滑口感，避免氧化产生的浑浊。',
+    steps: [
+      { title: '使用调酒杯（Mixing Glass）', desc: '选用厚壁玻璃调酒杯，预先用冰水冰杯 30 秒，倒掉融水。冰杯能减少摇制过程中冰块融化，保持浓度。', emoji: '🫙' },
+      { title: '加入大量冰块', desc: '放入 4-5 块大冰块，冰块越大搅拌越顺滑。加冰后稍等 10 秒让杯壁充分冷却。', emoji: '🧊' },
+      { title: '量取原料加入', desc: '依次用 Jigger 量取原料加入调酒杯。苦精类只需 2-3 dash（抖动瓶身）即可。', emoji: '💧' },
+      { title: '吧匙正确握法', desc: '三指持匙：食指和中指夹住匙柄中段，拇指轻抵。匙背贴着杯壁，让匙头沿着杯壁内侧滑动，而不是在中间搅动。', emoji: '🥄' },
+      { title: '圆润搅拌 30-40 圈', desc: '顺时针或逆时针均可，保持匀速。不要用力搅，让冰块随液体自然转动。目标是让液体温度降至 -3°C 左右。感受到杯外壁结霜即可停止。', emoji: '🔄' },
+      { title: '用隔冰器倒入冰镇酒杯', desc: '将朱利普过滤器（Julep Strainer）扣在调酒杯中，倾斜缓慢倒入预冷好的马天尼杯或岩石杯中。', emoji: '🍸' },
+    ]
+  },
+  build: {
+    name: 'Build · 直调法',
+    tag: '基础手法',
+    desc: '直调法是最简单的调酒方式，直接在饮用杯中加入原料，适合高球类（Highball）或古典鸡尾酒（Old Fashioned）。原料叠加次序决定混合效果。',
+    steps: [
+      { title: '选择正确的杯型', desc: '古典杯（Rocks Glass）适合古典鸡尾酒；高球杯（Highball）适合长饮型。杯型影响冰块融化速度与香气挥发面积。', emoji: '🥃' },
+      { title: '加入冰块', desc: '古典杯：放 1 颗大冰球（直径 5cm+）或 2-3 块方形大冰。高球杯：装满冰块防止过快稀释。不要用碎冰，融化太快。', emoji: '🧊' },
+      { title: '加入基酒', desc: '用 Jigger 量取基酒倒入杯中。标准量：威士忌 45ml，金酒/伏特加 30ml。', emoji: '🥃' },
+      { title: '加入辅料', desc: '苦精直接 Dash 在冰块上；糖浆沿杯壁缓缓倒入底部。高球杯的苏打水、汤力水最后加，沿匙背缓慢注入保留气泡。', emoji: '🌊' },
+      { title: '轻柔搅拌 2-3 圈', desc: '用吧匙轻搅 2-3 圈混合，不要过度搅拌破坏气泡（含气泡型）或分层效果（如龙舌兰日出）。', emoji: '✨' },
+      { title: '加装饰物收尾', desc: '橙皮扭转后放置杯沿，或用鸡尾酒签穿起樱桃。装饰物提升香气与视觉感受。', emoji: '🍊' },
+    ]
+  }
+};
+
+function showTutorialDetail(key) {
+  const t = tutorials[key];
+  if (!t) return;
+
+  let html = `
+    <div style="max-width:720px;">
+      <div style="margin-bottom:24px;">
+        <div class="tutorial-tag" style="display:inline-block;margin-bottom:8px;">${t.tag}</div>
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:10px;">${t.name}</h1>
+        <p style="color:var(--text-sub);font-size:14px;line-height:1.8;">${t.desc}</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📸 动作演示</div>
+        <div style="height:200px;background:linear-gradient(135deg,#2a2015,#1a1610);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:1px dashed var(--border);">
+          <span style="font-size:48px;">🎬</span>
+          <span style="font-size:13px;color:var(--text-sub);">Images 2.0 图片演示区</span>
+          <span style="font-size:11px;color:var(--text-muted);">写实风格 · 分步手法动作图</span>
+          <span class="badge badge-gold" style="margin-top:4px;">✨ 点击生成实景图片</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="card-title">📋 操作步骤</div>
+        <div class="steps-container">
+  `;
+
+  t.steps.forEach((s, i) => {
+    html += `
+      <div class="step-item">
+        <div class="step-num">${i+1}</div>
+        <div class="step-content">
+          <div class="step-title">${s.title}</div>
+          <div class="step-desc">${s.desc}</div>
+          <div class="step-img-placeholder">
+            <span class="emoji">${s.emoji}</span>
+            <span class="label">步骤 ${i+1} 演示图 · AI 生成</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div></div></div>`;
+
+  document.getElementById('tutorial-detail-content').innerHTML = html;
+  showPage('tutorial-detail');
+  document.getElementById('page-tutorial-detail').scrollTop = 0;
+}
+
+// ============================
+//  RECIPE DETAIL
+// ============================
+const recipes = {
+  negroni: {
+    name: '尼格罗尼',
+    emoji: '🍊',
+    category: 'Negroni · 经典款 · 金酒基',
+    desc: '等比三款原料造就完美平衡——金酒的植物香气、金巴利的苦橙风味、苦艾酒的草本甜蜜，搅拌后呈深琥珀色，优雅复杂。',
+    method: 'Stir（搅拌法）',
+    glass: '岩石杯（Rocks Glass）',
+    ice: '大冰球',
+    time: '3 分钟',
+    ingredients: [
+      { name: 'Tanqueray 金酒', amount: 30, unit: 'ml', price: 0.202, cadPrice: 43.45, cadSize: 1140, note: 'LCBO $43.45/1140ml', lcbo: true },
+      { name: 'Campari 苦酒', amount: 30, unit: 'ml', price: 0.246, cadPrice: 34.80, cadSize: 750, note: 'LCBO $34.80/750ml', lcbo: true },
+      { name: 'Martini Rosso 苦艾酒', amount: 30, unit: 'ml', price: 0.060, cadPrice: 18.00, cadSize: 1000, note: 'LCBO $18.00/1000ml', lcbo: true },
+    ],
+    garnish: { name: '橙皮扭转', price: 0.5 },
+    steps: [
+      { title: '冰镇调酒杯', desc: '向调酒杯中加入冰块和少量水，冰杯 30 秒后倒掉。', emoji: '🧊' },
+      { title: '量取三款原料', desc: '依次用 Jigger 量取金酒 30ml、Campari 30ml、Martini Rosso 30ml，倒入冰镇调酒杯。', emoji: '📏' },
+      { title: '加冰搅拌 30 圈', desc: '放入 4 块冰块，吧匙沿杯壁顺时针搅拌 30-40 圈至充分冷却，杯外壁结霜。', emoji: '🥄' },
+      { title: '过滤倒入岩石杯', desc: '在岩石杯中放入大冰球，用过滤器将酒液缓缓倒入。', emoji: '🫗' },
+      { title: '橙皮装饰', desc: '取一片橙皮，表皮朝上对折喷出精油到酒液表面，然后扭成螺旋状放在杯沿。', emoji: '🍊' },
+    ]
+  },
+  mojito: {
+    name: '莫吉托',
+    emoji: '🌿',
+    category: 'Mojito · 经典款 · 朗姆基',
+    desc: '古巴国民鸡尾酒，薄荷与青柠的清新碰撞，蔗糖的甘甜与朗姆的温暖，最后一口苏打气泡在嘴里爆开，夏日的标配。',
+    method: 'Build（直调法）',
+    glass: '高球杯（Highball）',
+    ice: '碎冰',
+    time: '2 分钟',
+    ingredients: [
+      { name: 'Bacardi 白朗姆', amount: 45, unit: 'ml', price: 0.207, cadPrice: 29.30, cadSize: 750, note: 'LCBO $29.30/750ml', lcbo: true },
+      { name: '鲜榨青柠汁', amount: 22, unit: 'ml', price: 0.20, cadPrice: null, cadSize: null, note: '鲜榨 · 超市参考价', lcbo: false },
+      { name: '蔗糖糖浆', amount: 15, unit: 'ml', price: 0.05, cadPrice: null, cadSize: null, note: '自制或超市参考价', lcbo: false },
+      { name: '新鲜薄荷叶', amount: 8, unit: 'g', price: 0.30, cadPrice: null, cadSize: null, note: '超市参考价', lcbo: false },
+      { name: '苏打水', amount: 60, unit: 'ml', price: 0.02, cadPrice: null, cadSize: null, note: '超市参考价', lcbo: false },
+    ],
+    garnish: { name: '薄荷束 + 青柠角', price: 0.8 },
+    steps: [
+      { title: '捣压薄荷', desc: '将薄荷叶放入高球杯底部，用捣棒轻压（不要捣碎），释放精油香气。', emoji: '🌿' },
+      { title: '加入青柠汁和糖浆', desc: '挤入 22ml 鲜榨青柠汁，倒入 15ml 蔗糖糖浆，轻轻混合。', emoji: '🍋' },
+      { title: '加入朗姆酒', desc: '用 Jigger 量取 45ml 白朗姆酒倒入杯中。', emoji: '🥃' },
+      { title: '填满碎冰', desc: '加入大量碎冰至杯口，碎冰冷却快、混合均匀。', emoji: '🧊' },
+      { title: '注入苏打水', desc: '沿吧匙背面缓缓倒入 60ml 苏打水，保留气泡。轻轻翻搅 1-2 次即可。', emoji: '💦' },
+      { title: '薄荷束装饰', desc: '将一束薄荷插入碎冰中，青柠角挂在杯沿，插入长吸管。', emoji: '🌿' },
+    ]
+  },
+  margarita: {
+    name: '玛格丽特',
+    emoji: '🍋',
+    category: 'Margarita · 经典款 · 龙舌兰基',
+    desc: '墨西哥最具代表性的鸡尾酒，盐边的矿物感衬托龙舌兰的烟熏，君度的甜橙平衡青柠的酸爽。锐利、直接、令人愉悦。',
+    method: 'Shake（摇酒法）',
+    glass: '玛格丽特杯（Margarita Glass）',
+    ice: '大冰块（摇制用）',
+    time: '4 分钟',
+    ingredients: [
+      { name: 'Jose Cuervo 龙舌兰', amount: 45, unit: 'ml', price: 0.242, cadPrice: 34.30, cadSize: 750, note: 'LCBO $34.30/750ml', lcbo: true },
+      { name: 'Cointreau 橙皮酒', amount: 22, unit: 'ml', price: 0.254, cadPrice: 36.00, cadSize: 750, note: 'LCBO ~$36.00/750ml', lcbo: true },
+      { name: '鲜榨青柠汁', amount: 22, unit: 'ml', price: 0.20, cadPrice: null, cadSize: null, note: '鲜榨 · 超市参考价', lcbo: false },
+    ],
+    garnish: { name: '盐边 + 青柠片', price: 0.3 },
+    steps: [
+      { title: '盐边处理', desc: '用切开的青柠沿杯口外沿润湿一圈，然后在盐碟上旋转杯口，挂上均匀盐边。', emoji: '🧂' },
+      { title: '摇壶加冰', desc: '向摇壶加入 4-5 块冰块，冰块要干净无气味。', emoji: '🧊' },
+      { title: '依次量取原料', desc: '量取龙舌兰 45ml、Cointreau 22ml、鲜榨青柠汁 22ml，依次倒入摇壶。', emoji: '📏' },
+      { title: '摇酒 12 秒', desc: '双手持壶用力摇 12-15 秒，直到壶身冰凉结霜，内部冰块撞击声变闷。', emoji: '🥤' },
+      { title: '过滤倒杯', desc: '用 Hawthorne 过滤器扣住，倒入已挂好盐边的玛格丽特杯（无冰饮法），或倒入盛有冰块的岩石杯（on the rocks）。', emoji: '🫗' },
+      { title: '青柠装饰', desc: '将半片青柠切口挂在杯沿收尾。', emoji: '🍋' },
+    ]
+  }
+};
+
+function renderRecipeDetail(key) {
+  const r = recipes[key];
+  if (!r) return;
+
+  const totalIngCost = r.ingredients.reduce((sum, ing) => sum + ing.amount * ing.price, 0);
+  const totalCost = totalIngCost + r.garnish.price;
+  // Industry standard: 4x markup for crafted cocktails
+  const suggest = Math.ceil(totalCost * 4);
+  const premium = Math.ceil(totalCost * 5);
+
+  let ingRows = r.ingredients.map(ing => {
+    const sub = (ing.amount * ing.price).toFixed(2);
+    const priceLabel = ing.lcbo && ing.cadPrice
+      ? `¥${ing.price.toFixed(3)}/ml (LCBO $${ing.cadPrice}/${ing.cadSize}ml)`
+      : `¥${ing.price.toFixed(2)}/ml (${ing.note})`;
+    return `
+      <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+        <td class="ing-name" style="padding:10px 12px;">${ing.name}</td>
+        <td style="padding:10px 12px;font-size:11px;color:var(--text-muted);">${priceLabel}</td>
+        <td class="ing-amount" style="padding:10px 12px;text-align:right;">${ing.amount}${ing.unit}</td>
+        <td class="ing-price" style="padding:10px 12px;text-align:right;">¥${ing.price.toFixed(2)}/${ing.unit}</td>
+        <td class="ing-subtotal" style="padding:10px 12px;text-align:right;">¥${sub}</td>
+      </tr>
+    `;
+  }).join('');
+
+  let stepsHtml = r.steps.map((s, i) => `
+    <div class="step-item" style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);display:flex;gap:14px;">
+      <div class="step-num" style="width:28px;height:28px;font-size:12px;">${i+1}</div>
+      <div class="step-content">
+        <div class="step-title" style="font-size:13px;">${s.title}</div>
+        <div class="step-desc" style="font-size:12px;">${s.desc}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('recipe-detail-panel').innerHTML = `
+    <div class="recipe-detail-header">
+      <div class="recipe-detail-img">
+        <span style="font-size:56px;">${r.emoji}</span>
+        <span style="font-size:10px;color:var(--text-muted);">AI 图片演示区</span>
+        <span class="img-gen-badge" style="position:static;margin-top:4px;">✨ Images 2.0</span>
+      </div>
+      <div class="recipe-detail-meta">
+        <div class="recipe-detail-name">${r.name}</div>
+        <div class="recipe-detail-desc">${r.desc}</div>
+        <div class="meta-row">
+          <div class="meta-chip"><span class="meta-chip-icon">🥃</span> ${r.method}</div>
+          <div class="meta-chip"><span class="meta-chip-icon">🍷</span> ${r.glass}</div>
+          <div class="meta-chip"><span class="meta-chip-icon">🧊</span> ${r.ice}</div>
+          <div class="meta-chip"><span class="meta-chip-icon">⏱️</span> ${r.time}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🌿 原料清单 & 成本</div>
+      <table class="ing-table">
+        <thead>
+          <tr>
+            <th>原料</th>
+            <th>备注</th>
+            <th style="text-align:right;">用量</th>
+            <th style="text-align:right;">单价</th>
+            <th style="text-align:right;">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ingRows}
+          <tr style="border-bottom:1px solid rgba(46,43,36,0.5);">
+            <td style="padding:10px 12px;" colspan="2">装饰物（${r.garnish.name}）</td>
+            <td style="padding:10px 12px;" colspan="2">—</td>
+            <td style="padding:10px 12px;text-align:right;color:var(--text-sub);">¥${r.garnish.price}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cost-summary">
+      <div class="cost-row">
+        <span class="label">原料合计</span>
+        <span class="value">¥${totalIngCost.toFixed(2)}</span>
+      </div>
+      <div class="cost-row">
+        <span class="label">装饰物</span>
+        <span class="value">¥${r.garnish.price.toFixed(1)}</span>
+      </div>
+      <div class="cost-row total">
+        <span class="label">LCBO 实际成本/杯</span>
+        <span class="value">¥${totalCost.toFixed(2)}</span>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:8px;margin-bottom:12px;">💡 基于 LCBO 零售价（CAD × 5.3 汇率估算）</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">标准售价 (4× markup)</div>
+          <div style="font-size:20px;font-weight:700;color:var(--gold-light);">¥${suggest}</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:10px;text-align:center;">
+          <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">溢价售价 (5× markup)</div>
+          <div style="font-size:20px;font-weight:700;color:var(--amber);">¥${premium}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 调制步骤</div>
+      <div class="recipe-steps">${stepsHtml}</div>
+    </div>
+  `;
+}
+
+function showRecipeDetail(key) {
+  showPage('recipes');
+  document.querySelectorAll('.recipe-item').forEach(el => el.classList.remove('active'));
+  renderRecipeDetail(key);
+}
+
+// ============================
+//  COST CALCULATOR
+// ============================
+function calcCost() {
+  const rows = [
+    [document.getElementById('c1-ml'), document.getElementById('c1-price')],
+    [document.getElementById('c2-ml'), document.getElementById('c2-price')],
+    [document.getElementById('c3-ml'), document.getElementById('c3-price')],
+  ];
+
+  let total = 0;
+  rows.forEach(([ml, price]) => {
+    if (ml && price) {
+      const v = parseFloat(ml.value) * parseFloat(price.value);
+      if (!isNaN(v)) total += v;
+    }
+  });
+
+  // Industry standard: 3-5x markup (bars)
+  // Low end (3x) for simple drinks, standard (4x) for crafted cocktails
+  document.getElementById('result-cost').textContent = '¥' + total.toFixed(2);
+  document.getElementById('result-suggest').textContent = '¥' + Math.ceil(total * 4);
+  document.getElementById('result-premium').textContent = '¥' + Math.ceil(total * 5);
+}
+
+// ============================
+//  INIT
+// ============================
+renderRecipeDetail('negroni');
+calcCost();
+
+// Bind nav click events via JS (more reliable than inline onclick)
+document.getElementById('main-nav').addEventListener('click', function(e) {
+  const navItem = e.target.closest('.nav-item');
+  if (!navItem) return;
+  const page = navItem.getAttribute('data-page');
+  if (page) showPage(page);
+});
+
+// ============================
+//  PWA: Service Worker
+// ============================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('SW registered:', reg.scope);
+    }).catch(() => {});
+  });
+}
+
+// ============================
+//  WINE CELLAR
+// ============================
+
+// Sample data — realistic Chinese collectible wine prices
+// Prices based on: 阿里拍卖 / 歌德老酒行 / 云酒说 / 苏富比(2023-2024)
+const cellarCollection = [
+  {
+    id: 1,
+    name: '飞天茅台 53°',
+    sub: '贵州茅台 · 2021年产 · 500ml',
+    category: 'maotai',
+    qty: 2,
+    purchasePrice: 2800,  // 入手价/瓶
+    auctionPrice: 3200,    // 拍卖成交价
+    dealerPrice: 2950,    // 回收商报价
+    estimate: 3050,       // 综合估价
+    trend: 6,             // 近6月涨跌%
+    emoji: '🏺',
+    badge: '茅台',
+    badgeColor: '#e74c3c',
+    note: '阿里拍卖 2024秋拍',
+    // Sparkline: 6 monthly price points (dealer price index)
+    sparkData: [2700, 2780, 2900, 2880, 2950, 3050]
+  },
+  {
+    id: 2,
+    name: '茅台生肖鼠年 53°',
+    sub: '贵州茅台 · 2020年产 · 500ml',
+    category: 'maotai',
+    qty: 1,
+    purchasePrice: 5800,
+    auctionPrice: 7800,
+    dealerPrice: 7200,
+    estimate: 7500,
+    trend: 15,
+    emoji: '🐭',
+    badge: '茅台',
+    badgeColor: '#e74c3c',
+    note: '歌德老酒行 2024冬拍',
+    sparkData: [6200, 6600, 7000, 7100, 7200, 7500]
+  },
+  {
+    id: 3,
+    name: '拉菲正牌 2010',
+    sub: 'Château Lafite Rothschild · 750ml',
+    category: 'wine',
+    qty: 1,
+    purchasePrice: 8500,
+    auctionPrice: 9200,
+    dealerPrice: 8700,
+    estimate: 9000,
+    trend: 4,
+    emoji: '🍷',
+    badge: '波尔多',
+    badgeColor: '#7b9fe0',
+    note: '苏富比 2024香港秋拍',
+    sparkData: [8400, 8600, 8700, 8650, 8700, 9000]
+  },
+  {
+    id: 4,
+    name: 'Macallan 18年',
+    sub: 'The Macallan 18YO Sherry Oak · 700ml',
+    category: 'whisky',
+    qty: 1,
+    purchasePrice: 3200,
+    auctionPrice: 4100,
+    dealerPrice: 3850,
+    estimate: 3950,
+    trend: 22,
+    emoji: '🥃',
+    badge: '威士忌',
+    badgeColor: '#c9882a',
+    note: 'Whisky Auctioneer 2024Q4',
+    sparkData: [3200, 3450, 3600, 3700, 3850, 3950]
+  },
+  {
+    id: 5,
+    name: '山崎 25年',
+    sub: 'Yamazaki 25YO Single Malt · 700ml',
+    category: 'whisky',
+    qty: 1,
+    purchasePrice: 18000,
+    auctionPrice: 24000,
+    dealerPrice: 22000,
+    estimate: 23000,
+    trend: -3,
+    emoji: '🍶',
+    badge: '威士忌',
+    badgeColor: '#c9882a',
+    note: "Sotheby's 香港 2024",
+    sparkData: [24500, 23800, 23500, 23200, 22000, 23000]
+  },
+  {
+    id: 6,
+    name: '五粮液 1618 52°',
+    sub: '宜宾五粮液 · 2019年产 · 500ml',
+    category: 'baijiu',
+    qty: 1,
+    purchasePrice: 900,
+    auctionPrice: 1100,
+    dealerPrice: 980,
+    estimate: 1030,
+    trend: 2,
+    emoji: '🥢',
+    badge: '名酒',
+    badgeColor: '#9b8fd4',
+    note: '云酒说 2024报价',
+    sparkData: [1000, 1010, 1020, 1000, 980, 1030]
+  }
+];
+
+let currentFilter = 'all';
+let editingId = null;
+
+// Render sparkline bars
+function sparklineHTML(data, baseColor) {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const bars = data.map((v, i) => {
+    const h = 8 + ((v - min) / range) * 28;
+    const isLast = i === data.length - 1;
+    return `<div class="sparkline-bar" style="height:${h}px;opacity:${isLast ? 1 : 0.35};background:${isLast ? baseColor : 'var(--border)'};"></div>`;
+  }).join('');
+  const startVal = '¥' + (data[0] >= 1000 ? (data[0]/1000).toFixed(1) + 'k' : data[0]);
+  const endVal = '¥' + (data[data.length-1] >= 1000 ? (data[data.length-1]/1000).toFixed(1) + 'k' : data[data.length-1]);
+  return `
+    <div class="cellar-sparkline">${bars}</div>
+    <div class="cellar-sparkline-labels">
+      <span>${startVal}</span>
+      <span>${endVal}</span>
+    </div>`;
+}
+
+function renderCellar() {
+  const grid = document.getElementById('cellar-grid');
+  const filtered = currentFilter === 'all'
+    ? cellarCollection
+    : cellarCollection.filter(b => b.category === currentFilter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="cellar-empty" style="grid-column:1/-1;">
+        <div class="emoji">🏺</div>
+        <h3>还没有收藏酒</h3>
+        <p>点击右上角「录入藏酒」，添加你的第一瓶茅台、拉菲或威士忌</p>
+        <button class="btn btn-primary" onclick="openAddModal()">+ 录入藏酒</button>
+      </div>`;
+    updateCellarStats();
+    return;
+  }
+
+  grid.innerHTML = filtered.map(b => {
+    const gain = (b.estimate - b.purchasePrice) * b.qty;
+    const gainClass = gain >= 0 ? 'gain' : 'loss';
+    const gainSign = gain >= 0 ? '+' : '';
+    const trendClass = b.trend > 0 ? 'trend-up' : b.trend < 0 ? 'trend-down' : 'trend-flat';
+    const trendSign = b.trend > 0 ? '▲' : b.trend < 0 ? '▼' : '—';
+    const sparkColor = b.trend >= 0 ? 'var(--green)' : 'var(--red)';
+
+    return `
+      <div class="cellar-card">
+        <div class="cellar-card-img">
+          <div class="bottle-emoji">${b.emoji}</div>
+          <div class="cellar-card-badge" style="background:${b.badgeColor};color:#fff;">${b.badge}</div>
+          <div class="cellar-card-actions">
+            <button class="edit-btn" title="编辑" onclick="event.stopPropagation();openEditModal(${b.id})">✏️</button>
+            <button class="del-btn" title="删除" onclick="event.stopPropagation();deleteBottle(${b.id})">🗑️</button>
+          </div>
+        </div>
+        <div class="cellar-card-body">
+          <div class="cellar-card-name">${b.name}</div>
+          <div class="cellar-card-sub">${b.sub}</div>
+          <div class="cellar-card-meta">
+            <span class="meta-tag">×${b.qty}</span>
+            <span class="meta-tag">${b.note}</span>
+          </div>
+          <div class="cellar-card-price-row">
+            <div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">综合估价</div>
+              <div class="cellar-card-current-val">¥${b.estimate.toLocaleString()}</div>
+            </div>
+            <div class="cellar-card-trend ${trendClass}">
+              ${trendSign} ${Math.abs(b.trend)}%
+            </div>
+          </div>
+          ${sparklineHTML(b.sparkData, sparkColor)}
+          <div style="display:flex;gap:4px;margin-bottom:8px;">
+            <div style="flex:1;height:4px;border-radius:2px;background:#7b9fe0;opacity:0.5;" title="拍卖成交价: ¥${b.auctionPrice.toLocaleString()}"></div>
+            <div style="flex:1;height:4px;border-radius:2px;background:var(--gold);opacity:0.5;" title="回收商报价: ¥${b.dealerPrice.toLocaleString()}"></div>
+          </div>
+          <div class="cellar-source-bar" style="margin-bottom:10px;">
+            <span class="source-dot source-auction"></span>拍 ¥${b.auctionPrice.toLocaleString()}
+            <span class="source-dot source-dealer" style="margin-left:8px;"></span>收 ¥${b.dealerPrice.toLocaleString()}
+          </div>
+          <div class="cellar-purchase-info">
+            <span><span class="label">入手价 </span>¥${b.purchasePrice.toLocaleString()}/瓶</span>
+            <span class="${gainClass}">${gainSign}¥${Math.abs(gain).toLocaleString()}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  updateCellarStats();
+}
+
+function updateCellarStats() {
+  const filtered = currentFilter === 'all'
+    ? cellarCollection
+    : cellarCollection.filter(b => b.category === currentFilter);
+
+  const totalVal = filtered.reduce((sum, b) => sum + b.estimate * b.qty, 0);
+  const totalCost = filtered.reduce((sum, b) => sum + b.purchasePrice * b.qty, 0);
+  const totalGain = totalVal - totalCost;
+  const totalQty = filtered.reduce((sum, b) => sum + b.qty, 0);
+  const avgPrice = totalQty > 0 ? Math.round(totalVal / totalQty) : 0;
+
+  document.getElementById('cellar-total-value').textContent = '¥' + totalVal.toLocaleString();
+  document.getElementById('cellar-total-sub').textContent = `共 ${totalQty} 瓶 · 阿里拍卖 / 歌德老酒行 / 云酒说`;
+  document.getElementById('cellar-count').textContent = totalQty;
+  document.getElementById('cellar-gain').textContent = (totalGain >= 0 ? '+' : '') + '¥' + Math.abs(totalGain).toLocaleString();
+  document.getElementById('cellar-gain').style.color = totalGain >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('cellar-avg').textContent = totalQty > 0 ? '¥' + avgPrice.toLocaleString() : '¥0';
+}
+
+function filterCellar(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderCellar();
+}
+
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modal-title').textContent = '➕ 录入新藏酒';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-category').value = 'maotai';
+  document.getElementById('f-vintage').value = '';
+  document.getElementById('f-purchase').value = '';
+  document.getElementById('f-qty').value = '1';
+  document.getElementById('f-auction').value = '';
+  document.getElementById('f-dealer').value = '';
+  document.getElementById('f-note').value = '';
+  document.getElementById('cellar-modal').classList.add('show');
+}
+
+function openEditModal(id) {
+  const b = cellarCollection.find(x => x.id === id);
+  if (!b) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = '✏️ 编辑藏酒';
+  document.getElementById('f-name').value = b.name;
+  document.getElementById('f-category').value = b.category;
+  document.getElementById('f-vintage').value = b.sub.match(/\d{4}/)?.[0] || '';
+  document.getElementById('f-purchase').value = b.purchasePrice;
+  document.getElementById('f-qty').value = b.qty;
+  document.getElementById('f-auction').value = b.auctionPrice;
+  document.getElementById('f-dealer').value = b.dealerPrice;
+  document.getElementById('f-note').value = b.note;
+  document.getElementById('cellar-modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('cellar-modal').classList.remove('show');
+  editingId = null;
+}
+
+function saveBottle() {
+  const name = document.getElementById('f-name').value.trim();
+  const purchase = parseFloat(document.getElementById('f-purchase').value) || 0;
+  const qty = parseInt(document.getElementById('f-qty').value) || 1;
+  const auction = parseFloat(document.getElementById('f-auction').value) || 0;
+  const dealer = parseFloat(document.getElementById('f-dealer').value) || 0;
+
+  if (!name) {
+    alert('请输入酒款名称');
+    return;
+  }
+
+  const estimate = Math.round((auction + dealer) / 2) || purchase;
+  const trend = purchase > 0 ? Math.round(((estimate - purchase) / purchase) * 100) : 0;
+
+  const catMap = {
+    maotai: { emoji: '🏺', badge: '茅台', color: '#e74c3c' },
+    wine: { emoji: '🍷', badge: '波尔多', color: '#7b9fe0' },
+    whisky: { emoji: '🥃', badge: '威士忌', color: '#c9882a' },
+    baijiu: { emoji: '🥢', badge: '名酒', color: '#9b8fd4' }
+  };
+  const cat = document.getElementById('f-category').value;
+  const vintage = document.getElementById('f-vintage').value;
+  const catInfo = catMap[cat] || catMap.baijiu;
+
+  const bottle = {
+    id: editingId || Date.now(),
+    name,
+    sub: catInfo.badge + (vintage ? ' · ' + vintage + '年产' : ''),
+    category: cat,
+    qty,
+    purchasePrice: purchase,
+    auctionPrice: auction,
+    dealerPrice: dealer,
+    estimate,
+    trend,
+    emoji: catInfo.emoji,
+    badge: catInfo.badge,
+    badgeColor: catInfo.color,
+    note: document.getElementById('f-note').value || '手动录入',
+    sparkData: [purchase || estimate, estimate, estimate, estimate, estimate, estimate]
+  };
+
+  if (editingId) {
+    const idx = cellarCollection.findIndex(x => x.id === editingId);
+    if (idx >= 0) cellarCollection[idx] = bottle;
+  } else {
+    cellarCollection.push(bottle);
+  }
+
+  closeModal();
+  renderCellar();
+}
+
+function deleteBottle(id) {
+  if (!confirm('确定删除这瓶藏酒吗？')) return;
+  const idx = cellarCollection.findIndex(x => x.id === id);
+  if (idx >= 0) cellarCollection.splice(idx, 1);
+  renderCellar();
+}
+
+function exportCellar() {
+  const filtered = currentFilter === 'all'
+    ? cellarCollection
+    : cellarCollection.filter(b => b.category === currentFilter);
+  if (filtered.length === 0) {
+    alert('酒柜为空，没有可导出的数据');
+    return;
+  }
+  const totalVal = filtered.reduce((sum, b) => sum + b.estimate * b.qty, 0);
+  const totalCost = filtered.reduce((sum, b) => sum + b.purchasePrice * b.qty, 0);
+  const lines = ['名称,品类,数量,入手价,拍卖价,回收商报价,综合估价,浮盈亏,备注'];
+  filtered.forEach(b => {
+    const gain = (b.estimate - b.purchasePrice) * b.qty;
+    lines.push(`${b.name},${b.badge},${b.qty},¥${b.purchasePrice},¥${b.auctionPrice},¥${b.dealerPrice},¥${b.estimate},¥${gain},${b.note}`);
+  });
+  lines.push('');
+  lines.push(`合计,,,,,,¥${totalVal},¥${totalVal - totalCost}`);
+  lines.push(`数据来源: 阿里拍卖 / 歌德老酒行 / 云酒说`);
+  lines.push(`导出时间: ${new Date().toLocaleString('zh-CN')}`);
+
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `酒柜导出_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
