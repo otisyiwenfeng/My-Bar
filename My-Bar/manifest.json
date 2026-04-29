@@ -1,11 +1,11 @@
 {
-  "name": "BarCraft - 专业调酒助手",
-  "short_name": "BarCraft",
+  "name": "Nightcap & Noir - 专业调酒助手",
+  "short_name": "Nightcap",
   "description": "调酒教学、配方管理、酒柜追踪",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0a14",
-  "theme_color": "#c9a84c",
+  "background_color": "#131313",
+  "theme_color": "#f2ca50",
   "orientation": "portrait",
   "icons": [
     {
