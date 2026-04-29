@@ -1,4 +1,27 @@
+# Dependencies
 node_modules/
+
+# Build outputs
 dist/
+
+# Generated images
+generated-images/
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
 *.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Workbuddy
+.workbuddy/
