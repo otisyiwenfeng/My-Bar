@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Nightcap & Noir"/>
+<meta name="theme-color" content="#131313"/>
+<link rel="manifest" href="manifest.json"/>
+<title>Nightcap & Noir — 专业调酒助手</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-background": "#e5e2e1",
+          "on-primary-container": "#554300",
+          "primary-fixed-dim": "#e9c349",
+          "surface-container-lowest": "#0e0e0e",
+          "error-container": "#93000a",
+          "on-secondary-container": "#cbb372",
+          "outline": "#99907c",
+          "surface-container": "#201f1f",
+          "secondary-fixed": "#fbe09b",
+          "surface-container-highest": "#353534",
+          "primary-container": "#d4af37",
+          "surface-dim": "#131313",
+          "surface-variant": "#353534",
+          "secondary-container": "#56450e",
+          "on-error-container": "#ffdad6",
+          "surface-tint": "#e9c349",
+          "on-secondary": "#3d2f00",
+          "surface-bright": "#393939",
+          "secondary": "#dec482",
+          "on-error": "#690005",
+          "on-surface-variant": "#d0c5af",
+          "inverse-primary": "#735c00",
+          "surface": "#131313",
+          "primary-fixed": "#ffe088",
+          "tertiary": "#ffc293",
+          "inverse-surface": "#e5e2e1",
+          "primary": "#f2ca50",
+          "error": "#ffb4ab",
+          "surface-container-low": "#1c1b1b",
+          "on-secondary-fixed": "#241a00",
+          "tertiary-fixed": "#ffdcc3",
+          "background": "#131313",
+          "on-surface": "#e5e2e1",
+          "outline-variant": "#4d4635",
+          "surface-container-high": "#2a2a2a",
+          "on-primary": "#3c2f00"
+        },
+        borderRadius: {
+          DEFAULT: "0.125rem",
+          lg: "0.25rem",
+          xl: "0.5rem",
+          full: "0.75rem"
+        },
+        fontFamily: {
+          headline: ["Noto Serif"],
+          display: ["Noto Serif"],
+          body: ["Manrope"],
+          label: ["Manrope"]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Manrope', sans-serif; background-color: #131313; color: #e5e2e1; }
+  .font-serif { font-family: 'Noto Serif', serif; }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .gold-shimmer { background: linear-gradient(45deg, #f2ca50 0%, #d4af37 100%); }
+</style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32 selection:bg-primary/30">
+
+<!-- ========== 顶部导航栏 ========== -->
+<header id="top-bar" class="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-stone-950/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+  <button id="menu-btn" class="text-amber-400 hover:text-amber-200 transition-colors duration-300">
+    <span class="material-symbols-outlined text-2xl">menu</span>
+  </button>
+  <h1 class="font-serif italic tracking-wide text-xl text-amber-400">Nightcap & Noir</h1>
+  <div class="w-8 h-8 rounded-full overflow-hidden border border-amber-400/20">
+    <img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDVXpk4eKPnDTd08BqvoDp2q4Uf20jFVBEIc1qTJra-o2YsVY1DakWiVTwghoLUyDut1x0ElfxV1aWhomcuxvfS8JAfsj5Iu8wSdFjWsXNGfg_qDheMCm1I5czs7grB1iDyNHsGaT2jL7fEIfWTSK0w1nWn0ihb_bpHaP4_a6Ya1ReKx_WsYuvhMvlxqSKGmmlLsDi4NUKTrMDE0a792c6HHwzqX8leKmZ17c7BR4Ih2tm-YDzW94BsUD6COBY1kNvl3U62Lp91ZI"/>
+  </div>
+</header>
+
+<!-- ========== 页面1: 酒单 (Menu) ========== -->
+<main id="page-menu" class="page active pt-20 px-4 max-w-6xl mx-auto">
+
+  <!-- 搜索栏 -->
+  <section class="mb-8">
+    <p class="text-tertiary font-label uppercase tracking-[0.2em] text-[10px] mb-2">Curated Alchemy / 精选佳酿</p>
+    <h2 class="text-3xl md:text-5xl font-display font-bold text-on-surface mb-6 leading-tight">探索深夜之魂<br/><span class="text-xl md:text-2xl font-normal opacity-70">Discover the Spirit of the Night</span></h2>
+    <div class="relative group">
+      <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+        <span class="material-symbols-outlined text-outline">search</span>
+      </div>
+      <input id="search-input" class="w-full bg-surface-container-high border-none rounded-xl py-3 pl-12 pr-4 text-on-surface placeholder:text-stone-500 focus:ring-1 focus:ring-primary transition-all duration-300" placeholder="搜索配方... Search your poison..." type="text"/>
+    </div>
+  </section>
+
+  <!-- 分类过滤 -->
+  <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
+    <button class="filter-btn bg-secondary-container text-on-secondary-container px-4 py-1.5 rounded-full whitespace-nowrap font-label font-semibold text-xs" data-filter="all">全部 All</button>
+    <button class="filter-btn bg-surface-container text-on-surface-variant px-4 py-1.5 rounded-full whitespace-nowrap font-label font-semibold text-xs hover:bg-surface-container-highest transition-colors" data-filter="经典">经典 Classic</button>
+    <button class="filter-btn bg-surface-container text-on-surface-variant px-4 py-1.5 rounded-full whitespace-nowrap font-label font-semibold text-xs hover:bg-surface-container-highest transition-colors" data-filter="现代">现代 Modern</button>
+    <button class="filter-btn bg-surface-container text-on-surface-variant px-4 py-1.5 rounded-full whitespace-nowrap font-label font-semibold text-xs hover:bg-surface-container-highest transition-colors" data-filter="无酒精">无酒精 Mocktail</button>
+  </div>
+
+  <!-- 标签过滤 -->
+  <div class="flex gap-2 mb-8 overflow-x-auto no-scrollbar opacity-80">
+    <span class="text-[10px] font-bold uppercase tracking-widest text-outline self-center mr-1">标签:</span>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="all">全部</button>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="果味">果味 Fruity</button>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="烟熏">烟熏 Smoky</button>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="清爽">清爽 Refreshing</button>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="苦味">苦味 Bitter</button>
+    <button class="tag-btn border border-outline-variant/30 text-on-surface-variant px-2 py-0.5 rounded-full whitespace-nowrap font-label text-[10px] uppercase hover:border-primary transition-colors" data-tag="咖啡">咖啡 Coffee</button>
+  </div>
+
+  <!-- 配方网格 -->
+  <div id="recipe-grid" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <!-- 由JS动态渲染 -->
+  </div>
+</main>
+
+<!-- ========== 页面2: 配方详情 (Recipe Detail) ========== -->
+<main id="page-detail" class="page pt-20">
+  <button id="back-to-menu" class="fixed top-24 left-4 z-50 w-10 h-10 rounded-full bg-stone-900/80 backdrop-blur flex items-center justify-center text-amber-400 hover:bg-stone-800 transition-colors">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+  <section id="detail-hero" class="relative w-full h-[400px] md:h-[500px] overflow-hidden">
+    <img id="detail-hero-img" class="w-full h-full object-cover" src="" alt=""/>
+    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 p-6 w-full">
+      <div class="flex flex-col gap-2">
+        <span id="detail-category" class="text-tertiary font-label tracking-[0.2em] uppercase text-xs"></span>
+        <h2 id="detail-name" class="font-display text-4xl md:text-6xl text-on-background font-bold tracking-tight"></h2>
+        <div class="flex items-center gap-4 mt-2">
+          <div class="flex items-center gap-1 text-primary"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span id="detail-rating" class="font-label font-bold text-sm"></span></div>
+          <div class="flex items-center gap-1 text-stone-400"><span class="material-symbols-outlined text-sm">schedule</span><span id="detail-time" class="font-label text-sm"></span></div>
+          <div class="flex items-center gap-1 text-stone-400"><span class="material-symbols-outlined text-sm">local_bar</span><span id="detail-strength" class="font-label text-sm"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="px-4 md:px-12 lg:px-24 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- 左侧：配料 -->
+    <aside class="lg:col-span-4 space-y-6">
+      <div>
+        <h3 class="font-display text-xl text-amber-400 italic mb-4">配料 Ingredients</h3>
+        <div id="detail-ingredients" class="space-y-3 bg-surface-container-low p-5 rounded-xl border-t border-white/5">
+          <!-- 由JS动态渲染 -->
+        </div>
+      </div>
+      <div>
+        <h3 class="font-display text-lg text-stone-400 italic mb-3">所需器具 Barware</h3>
+        <div id="detail-barware" class="grid grid-cols-2 gap-3">
+          <!-- 由JS动态渲染 -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- 右侧：步骤 -->
+    <article class="lg:col-span-8 space-y-8">
+      <section>
+        <h3 class="font-display text-2xl text-on-background mb-6 flex items-center gap-4">
+          <span class="h-[1px] flex-grow bg-outline-variant/30"></span>
+          调制步骤 Methodology
+          <span class="h-[1px] flex-grow bg-outline-variant/30"></span>
+        </h3>
+        <div id="detail-steps" class="space-y-8">
+          <!-- 由JS动态渲染 -->
+        </div>
+      </section>
+    </article>
+  </div>
+</main>
+
+<!-- ========== 页面3: 我的酒柜 (My Bar) ========== -->
+<main id="page-mybar" class="page pt-20 px-4 max-w-5xl mx-auto">
+  <section class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="space-y-1">
+      <span class="text-tertiary font-label uppercase tracking-widest text-xs">My Collection</span>
+      <h2 class="serif-headline text-4xl font-light leading-tight">我的酒柜</h2>
+      <p class="text-on-surface-variant max-w-md font-body text-sm">管理您的私人藏酒，追踪价值变化</p>
+    </div>
+    <button id="add-spirit-btn" class="bg-primary text-on-primary flex items-center gap-2 px-5 py-2.5 rounded-md shadow-lg hover:opacity-90 transition-all duration-300 text-sm font-bold uppercase tracking-wider">
+      <span class="material-symbols-outlined text-sm">add</span>
+      添加藏酒
+    </button>
+  </section>
+
+  <!-- 统计 -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-surface-container-low p-5 rounded-xl border-l-2 border-primary">
+      <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">藏品总数</p>
+      <h3 id="stat-total" class="text-2xl font-display text-on-surface">0</h3>
+    </div>
+    <div class="bg-surface-container-low p-5 rounded-xl">
+      <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">总估值</p>
+      <h3 id="stat-value" class="text-2xl font-display text-on-surface">¥0</h3>
+    </div>
+    <div class="bg-surface-container-low p-5 rounded-xl">
+      <p class="text-stone-500 text-xs uppercase tracking-widest mb-1">今日变动</p>
+      <h3 id="stat-change" class="text-2xl font-display text-green-400">+0%</h3>
+    </div>
+  </div>
+
+  <!-- 藏酒列表 -->
+  <div id="mybar-list" class="space-y-3">
+    <!-- 由JS动态渲染 -->
+  </div>
+</main>
+
+<!-- ========== 页面4: 调酒教学 (School) ========== -->
+<main id="page-school" class="page pt-20 pb-32 px-4 max-w-5xl mx-auto">
+  <section class="mb-10">
+    <span class="text-tertiary font-label tracking-[0.2em] text-xs uppercase mb-2 block">The Curriculum</span>
+    <h2 class="text-4xl md:text-6xl font-serif text-on-surface leading-tight">掌握<span class="italic text-primary">深夜</span>艺术</h2>
+  </section>
+
+  <!-- 基础技法 -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
+    <div class="md:col-span-8 group cursor-pointer overflow-hidden rounded-xl bg-surface-container-high relative aspect-video md:aspect-auto md:h-[350px]">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10"></div>
+      <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBifZQgBbD7wwxSITDbHupAiQc6R_6Ld-hdDUdOVGaQj8v6KfGvNiRaS0J6gxLN3abe48gjtve2K-IUywvzxVrgn5u1wXvlHs7qKcp_PiFCDHz53SyEGyz16TNqAJILmrBrHlZlWA5LTFR2sGq18F-bEQ0HPVNV_8n2fGZuL5yp8a1bqs0pTjIOBKMwKL8CvEJoaEhF_Jq_hpUonoj-SQ29TSu_HMMOiG5r5AwsBlja6KI5gdANq0wBRoglrjm8qDHIPQpkI8f8JZg" alt="Basic Techniques"/>
+      <div class="absolute bottom-0 left-0 p-6 z-20 w-full">
+        <div class="flex items-center gap-3 mb-3"><span class="px-3 py-0.5 bg-primary text-on-primary text-[10px] font-bold tracking-widest uppercase rounded-full">基础</span><span class="text-primary-fixed-dim text-xs font-medium">6 节课</span></div>
+        <h3 class="text-2xl font-serif text-on-surface mb-1">基础调酒技法</h3>
+        <p class="text-on-surface-variant text-sm max-w-md mb-4">学习摇和、搅拌、分层等基本技法，掌握完美稀释与质感。</p>
+        <button class="flex items-center gap-2 py-2.5 px-5 gold-shimmer text-on-primary font-bold text-xs uppercase tracking-widest rounded-md hover:opacity-90 transition-all">开始学习 <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+      </div>
+    </div>
+
+    <div class="md:col-span-4 flex flex-col gap-4">
+      <div class="bg-surface-container-high rounded-xl p-6 flex-1 flex flex-col justify-between hover:bg-surface-container-highest transition-colors cursor-pointer border-t border-outline/10">
+        <div><span class="material-symbols-outlined text-primary text-3xl mb-4">wine_bar</span><h3 class="text-xl font-serif text-on-surface mb-2">酒杯指南</h3><p class="text-on-surface-variant text-sm">深入了解酒杯在保温和香气传递中的作用。</p></div>
+        <div class="mt-4 flex justify-between items-center"><span class="text-tertiary text-[10px] font-bold tracking-widest uppercase">4 节课</span><span class="material-symbols-outlined text-primary">chevron_right</span></div>
+      </div>
+      <div class="bg-surface-container-high rounded-xl p-6 flex-1 flex flex-col justify-between hover:bg-surface-container-highest transition-colors cursor-pointer border-t border-outline/10">
+        <div><span class="material-symbols-outlined text-primary text-3xl mb-4">architecture</span><h3 class="text-xl font-serif text-on-surface mb-2">调酒工具</h3><p class="text-on-surface-variant text-sm">从双层摇酒器到日本量酒器，掌握专业工具。</p></div>
+        <div class="mt-4 flex justify-between items-center"><span class="text-tertiary text-[10px] font-bold tracking-widest uppercase">5 节课</span><span class="material-symbols-outlined text-primary">chevron_right</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 进阶课程 -->
+  <div class="mt-8">
+    <h4 class="text-tertiary font-label tracking-[0.2em] text-[10px] uppercase mb-4">进阶课程 Advanced</h4>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="bg-surface-container-low p-5 rounded-xl flex items-center gap-3 hover:bg-surface-container transition-colors cursor-pointer">
+        <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-primary">science</span></div>
+        <div><p class="text-on-surface font-semibold text-sm">分子调酒</p><p class="text-on-surface-variant text-xs">泡沫、凝胶与球化</p></div>
+      </div>
+      <div class="bg-surface-container-low p-5 rounded-xl flex items-center gap-3 hover:bg-surface-container transition-colors cursor-pointer">
+        <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-primary">menu_book</span></div>
+        <div><p class="text-on-surface font-semibold text-sm">金酒历史</p><p class="text-on-surface-variant text-xs">从 Jenever 到伦敦干金酒</p></div>
+      </div>
+      <div class="bg-surface-container-low p-5 rounded-xl flex items-center gap-3 hover:bg-surface-container transition-colors cursor-pointer">
+        <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center"><span class="material-symbols-outlined text-primary">palette</span></div>
+        <div><p class="text-on-surface font-semibold text-sm">装饰艺术</p><p class="text-on-surface-variant text-xs">视觉叙事</p></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ========== 页面5: 个人中心 (Profile) ========== -->
+<main id="page-profile" class="page pt-20 px-4 max-w-2xl mx-auto">
+  <div class="flex flex-col items-center mb-10">
+    <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-amber-400/30 mb-4">
+      <img alt="Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARvWEiHbJkdoZePioP6-OIrzSPJw2w9DU1u_fN2LsylaDqKG8Pf1t0jmKaQEQoT_WxlbXns89BAZeQEGYT7F9YWxorkmbNE_wiz3BWy9Pv_tkPP40XuemMfGcPMqD75-aKE9k0xosraZsC2_pxTkUljAHwQT9Mub51d60OQVTZ6d4PcvobYKPcqwTJtKEaw-8EDxgFiH6VtkL0Tebv7Qp0sc0cJXCVt3LrXimP0sAo1xFlRognzERwtQEsc7bqf8tG1wNNY-z558k"/>
+    </div>
+    <h2 class="text-2xl font-serif text-on-surface">调酒师</h2>
+    <p class="text-sm text-stone-400">Level 12 Alchemist</p>
+    <div class="mt-4 w-full max-w-xs">
+      <div class="flex justify-between text-[10px] text-tertiary font-bold tracking-widest uppercase mb-1"><span>Initiate</span><span>Grand Master</span></div>
+      <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden"><div class="h-full w-[70%] gold-shimmer shadow-[0_0_12px_rgba(242,202,80,0.4)]"></div></div>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <a href="#" class="flex items-center gap-4 p-3 text-stone-400 hover:bg-stone-900/50 hover:text-amber-200 transition-colors rounded-lg"><span class="material-symbols-outlined">settings_input_component</span><span class="font-serif">库存设置</span></a>
+    <a href="#" class="flex items-center gap-4 p-3 text-stone-400 hover:bg-stone-900/50 hover:text-amber-200 transition-colors rounded-lg"><span class="material-symbols-outlined">sync</span><span class="font-serif">数据同步</span></a>
+    <a href="#" class="flex items-center gap-4 p-3 text-stone-400 hover:bg-stone-900/50 hover:text-amber-200 transition-colors rounded-lg"><span class="material-symbols-outlined">stars</span><span class="font-serif">收藏酒单</span></a>
+    <a href="#" class="flex items-center gap-4 p-3 text-stone-400 hover:bg-stone-900/50 hover:text-amber-200 transition-colors rounded-lg"><span class="material-symbols-outlined">settings</span><span class="font-serif">应用设置</span></a>
+  </div>
+</main>
+
+
+<!-- ========== 底部导航栏 ========== -->
+<nav id="bottom-nav" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center pt-3 pb-6 px-4 bg-stone-900/90 backdrop-blur-2xl rounded-t-2xl shadow-[0_-4px_24px_rgba(0,0,0,0.6)]">
+  <button data-page="menu" class="nav-btn flex flex-col items-center justify-center text-amber-400 scale-110 transition-transform">
+    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_bar</span>
+    <span class="font-sans uppercase tracking-widest text-[10px] font-semibold mt-1">酒单</span>
+  </button>
+  <button data-page="mybar" class="nav-btn flex flex-col items-center justify-center text-stone-500 opacity-60 hover:opacity-100 transition-opacity">
+    <span class="material-symbols-outlined">liquor</span>
+    <span class="font-sans uppercase tracking-widest text-[10px] font-semibold mt-1">酒柜</span>
+  </button>
+  <button data-page="school" class="nav-btn flex flex-col items-center justify-center text-stone-500 opacity-60 hover:opacity-100 transition-opacity">
+    <span class="material-symbols-outlined">school</span>
+    <span class="font-sans uppercase tracking-widest text-[10px] font-semibold mt-1">学堂</span>
+  </button>
+  <button data-page="profile" class="nav-btn flex flex-col items-center justify-center text-stone-500 opacity-60 hover:opacity-100 transition-opacity">
+    <span class="material-symbols-outlined">person</span>
+    <span class="font-sans uppercase tracking-widest text-[10px] font-semibold mt-1">我的</span>
+  </button>
+</nav>
+
+<!-- ========== 添加藏酒弹窗 ========== -->
+<div id="add-spirit-modal" class="fixed inset-0 z-[100] hidden">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAddSpiritModal()"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-surface-container rounded-2xl p-6 shadow-2xl">
+    <h3 class="text-xl font-serif text-on-surface mb-4">添加藏酒</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="text-xs text-on-surface-variant uppercase tracking-wider">酒名</label>
+        <input id="spirit-name" class="w-full mt-1 bg-surface-container-highest border border-outline/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:outline-none focus:border-primary" placeholder="如：茅台 飞天 2020"/>
+      </div>
+      <div>
+        <label class="text-xs text-on-surface-variant uppercase tracking-wider">类别</label>
+        <select id="spirit-category" class="w-full mt-1 bg-surface-container-highest border border-outline/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:outline-none focus:border-primary">
+          <option value="白酒">白酒 Baijiu</option>
+          <option value="威士忌">威士忌 Whisky</option>
+          <option value="葡萄酒">葡萄酒 Wine</option>
+          <option value="白兰地">白兰地 Brandy</option>
+          <option value="其他">其他 Others</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-on-surface-variant uppercase tracking-wider">购买价格 (¥)</label>
+          <input id="spirit-cost" type="number" class="w-full mt-1 bg-surface-container-highest border border-outline/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:outline-none focus:border-primary" placeholder="0"/>
+        </div>
+        <div>
+          <label class="text-xs text-on-surface-variant uppercase tracking-wider">当前估值 (¥)</label>
+          <input id="spirit-value" type="number" class="w-full mt-1 bg-surface-container-highest border border-outline/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:outline-none focus:border-primary" placeholder="0"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs text-on-surface-variant uppercase tracking-wider">数量</label>
+        <input id="spirit-qty" type="number" value="1" class="w-full mt-1 bg-surface-container-highest border border-outline/20 rounded-lg px-3 py-2 text-on-surface text-sm focus:outline-none focus:border-primary"/>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="closeAddSpiritModal()" class="flex-1 border border-outline/30 text-on-surface-variant py-2.5 rounded-md font-label text-sm font-semibold hover:bg-surface-container-highest transition-colors">取消</button>
+      <button onclick="saveSpirit()" class="flex-1 bg-primary text-on-primary py-2.5 rounded-md font-label text-sm font-semibold hover:opacity-90 transition-opacity">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== JavaScript ========== -->
+<script>
+// ==================== 配方数据 ====================
+const recipes = [
+  {
+    id: 'negroni',
+    name: 'Negroni',
+    nameCn: '尼格罗尼',
+    category: '经典',
+    tags: ['苦味', '经典'],
+    rating: 4.8,
+    time: '5 MIN',
+    strength: 'Medium',
+    heroImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAl-H3yBidlWfoo-EUVWH7yag0CVXdqw8brPPwIScWz6_7FJ0wfT9VEcPNJZfX53-nf51PGursdDcNQGbPrZ_8OXhzJ_RNH_5Ny0yTk1A-_63Db81ygzNIpXTs48S2YsZijhBIxLdwm8cUG8KYImuJBPbFyZegpkjqiztx8gaiWNjDV2TxRGEvYwV7FdWOUKlBqlyj1nByhT6FqND-Lanup9B1ei3bkE0twvXoCMQkfjSGO-ZM_Oju2Rct--3EQe1DOQX0uCCKWJXY',
+    ingredients: [
+      {name: 'Gin 金酒', amount: '30', unit: 'ml'},
+      {name: 'Campari 金巴利', amount: '30', unit: 'ml'},
+      {name: 'Sweet Vermouth 甜苦艾酒', amount: '30', unit: 'ml'},
+      {name: 'Orange Peel 橙皮', amount: '1', unit: '条'}
+    ],
+    barware: ['rocks', 'mixing'],
+    steps: [
+      {step: 1, title: '准备', desc: '取一个古典杯，放入一个大冰球。'},
+      {step: 2, title: '倒入', desc: '将金酒、金巴利和甜苦艾酒依次倒入混合杯中。'},
+      {step: 3, title: '搅拌', desc: '用吧勺轻轻搅拌约30秒，使酒液充分混合降温。'},
+      {step: 4, title: '过滤装杯', desc: '将混合好的酒液过滤倒入古典杯中，用橙皮擦拭杯口并放入杯中装饰。'}
+    ]
+  },
+  {
+    id: 'mojito',
+    name: 'Mojito',
+    nameCn: '莫吉托',
+    category: '经典',
+    tags: ['清爽', '果味'],
+    rating: 4.7,
+    time: '6 MIN',
+    strength: 'Light',
+    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    ingredients: [
+      {name: 'White Rum 白朗姆', amount: '45', unit: 'ml'},
+      {name: 'Fresh Lime Juice 青柠汁', amount: '25', unit: 'ml'},
+      {name: 'Mint Leaves 薄荷叶', amount: '8', unit: '片'},
+      {name: 'Sugar 白砂糖', amount: '2', unit: '勺'},
+      {name: 'Soda Water 苏打水', amount: '适量', unit: ''}
+    ],
+    barware: ['collins', 'muddler'],
+    steps: [
+      {step: 1, title: '捣碎', desc: '在高球杯中放入薄荷叶和糖，轻轻捣碎释放香气。'},
+      {step: 2, title: '加酸', desc: '挤入青柠汁，加入朗姆酒搅拌均匀。'},
+      {step: 3, title: '加冰', desc: '加入碎冰至杯子的八分满。'},
+      {step: 4, title: '补气', desc: '倒入苏打水至满杯，轻轻搅拌，用薄荷枝装饰。'}
+    ]
+  },
+  {
+    id: 'margarita',
+    name: 'Margarita',
+    nameCn: '玛格丽特',
+    category: '经典',
+    tags: ['清爽', '果味'],
+    rating: 4.6,
+    time: '5 MIN',
+    strength: 'Medium',
+    heroImg: 'https://images.unsplash.com/photo-1563213126-a4273aed6594?w=800',
+    ingredients: [
+      {name: 'Tequila 龙舌兰', amount: '45', unit: 'ml'},
+      {name: 'Cointreau 君度', amount: '20', unit: 'ml'},
+      {name: 'Lime Juice 青柠汁', amount: '20', unit: 'ml'},
+      {name: 'Agave Syrup 龙舌兰糖浆', amount: '10', unit: 'ml'},
+      {name: 'Salt 盐', amount: '适量', unit: ''}
+    ],
+    barware: ['cocktail', 'shaker'],
+    steps: [
+      {step: 1, title: '盐边', desc: '用青柠角擦拭杯口，将杯口倒置在盐盘中沾上盐边。'},
+      {step: 2, title: '摇和', desc: '将所有原料放入摇酒器，加满冰块，用力摇和15秒。'},
+      {step: 3, title: '过滤', desc: '将酒液双重过滤倒入冰镇的玛格丽特杯中。'},
+      {step: 4, title: '装饰', desc: '用青柠角或盐边装饰，即可享用。'}
+    ]
+  },
+  {
+    id: 'oldfashioned',
+    name: 'Old Fashioned',
+    nameCn: '古典鸡尾酒',
+    category: '经典',
+    tags: ['烟熏', '经典'],
+    rating: 4.9,
+    time: '5 MIN',
+    strength: 'Strong',
+    heroImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB6WoNGWgmvMxsVwVWM-9zgg4D963p2FbnuYPB4K6yo7vuLhFx-MrHI3Zofdm3oVN27tLZv7swPT8AiiE_3SSlv7Y0JQ2noBVjsZSkrAfmmFo0cbvmAisHoB-GuUlQE3QvJIBuK4TmVcc5QpOZ2iC59lfAcq9HB_U6S1rMZWAA8vLZs0lrrP384nrTUZaDsYV5GvOL_43UTQGJH5b2f5lwcGArXvoOH3_x1rXMjIULCWNP-p6goSmcsfVf_sswOnkbVfesCR5yTyJ8',
+    ingredients: [
+      {name: 'Bourbon/Rye 波本/黑麦威士忌', amount: '60', unit: 'ml'},
+      {name: 'Sugar 糖', amount: '1', unit: '块'},
+      {name: 'Angostura Bitters 安格斯特拉苦精', amount: '3', unit: '滴'},
+      {name: 'Orange Peel 橙皮', amount: '1', unit: '条'}
+    ],
+    barware: ['rocks', 'muddler'],
+    steps: [
+      {step: 1, title: 'Muddle 捣碎', desc: '在古典杯中加入糖和苦精，加少量水捣碎至糖溶解。'},
+      {step: 2, title: '加酒和冰', desc: '加入大冰块，倒入威士忌。酒的品质至关重要，选择有个性的酒。'},
+      {step: 3, title: '轻轻搅拌', desc: '轻轻搅拌20-30秒。目标是降温并产生少量稀释，不要充入空气。'},
+      {step: 4, title: '装饰', desc: '将橙皮油挤入酒中，放入杯中。加一颗马拉斯奇诺樱桃，杯壁起霜时立即享用。'}
+    ]
+  },
+  {
+    id: 'manhattan',
+    name: 'Manhattan',
+    nameCn: '曼哈顿',
+    category: '经典',
+    tags: ['烟熏', '经典'],
+    rating: 4.7,
+    time: '5 MIN',
+    strength: 'Strong',
+    heroImg: 'https://images.unsplash.com/photo-1470337459683-829a830cd0b9?w=800',
+    ingredients: [
+      {name: 'Rye Whiskey 黑麦威士忌', amount: '50', unit: 'ml'},
+      {name: 'Sweet Vermouth 甜苦艾酒', amount: '20', unit: 'ml'},
+      {name: 'Angostura Bitters 苦精', amount: '2', unit: '滴'},
+      {name: 'Maraschino Cherry 马拉斯奇诺樱桃', amount: '1', unit: '颗'}
+    ],
+    barware: ['cocktail', 'mixing'],
+    steps: [
+      {step: 1, title: '混合', desc: '在混合杯中加入威士忌、甜苦艾酒和苦精。'},
+      {step: 2, title: '搅拌', desc: '加满冰块，用吧勺轻轻搅拌约25秒。'},
+      {step: 3, title: '过滤', desc: '将酒液过滤倒入冰镇的鸡尾酒杯中。'},
+      {step: 4, title: '装饰', desc: '用马拉斯奇诺樱桃装饰即可。'}
+    ]
+  },
+  {
+    id: 'drymartini',
+    name: 'Dry Martini',
+    nameCn: '干马天尼',
+    category: '经典',
+    tags: ['草本', '经典'],
+    rating: 4.8,
+    time: '4 MIN',
+    strength: 'Strong',
+    heroImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCKZIFlqVPB-rEiOG_LGM-mwnaDZwpV1SwzRCwWXySApoOOdJZuoKagadBgiAtBtQlDW_rWypu3IpspHd-2ytEwfUGwWpBoDCkTxHljZbdvNN93pSSZc42uZam9S5w1NNeJdLBGeSnQHfRLfE2ifNqu2T7sCLycKWlWv_zyLt9ayvHuM2NLF-vWv5yW1KKFFsAgm1BSaCSEclM1w89Ns2ysZ2sEtgDeFF-O77v0nsgDbwweE7_KEw-MGV7lUU_cIIprufPalR91Nk',
+    ingredients: [
+      {name: 'Gin 金酒', amount: '60', unit: 'ml'},
+      {name: 'Dry Vermouth 干苦艾酒', amount: '10', unit: 'ml'},
+      {name: 'Olive 橄榄', amount: '3', unit: '颗'}
+    ],
+    barware: ['cocktail', 'mixing'],
+    steps: [
+      {step: 1, title: '冰杯', desc: '将鸡尾酒杯放入冷冻室冰镇。'},
+      {step: 2, title: '搅拌', desc: '在混合杯中加入金酒和干苦艾酒，加冰搅拌30次。'},
+      {step: 3, title: '过滤', desc: '将酒液双重过滤倒入冰镇的鸡尾酒杯中。'},
+      {step: 4, title: '装饰', desc: '用鸡尾酒签串起三颗橄榄放入杯中。'}
+    ]
+  },
+  {
+    id: 'whiskeysour',
+    name: 'Whiskey Sour',
+    nameCn: '威士忌酸',
+    category: '经典',
+    tags: ['果味', '清爽'],
+    rating: 4.5,
+    time: '5 MIN',
+    strength: 'Medium',
+    heroImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDa3KdgjuLy1ljWXYeRAZ_Ph9LKxKQJq8QjkfwNtCsVfNFsAu0wT38ZrVhOF25ZPhowNko9zVQMOQxuxTwxKrXZ4w7RqR50Y_I1XGFl9s1fMTjTtc0l7-aDUb-eit426xXBOL2NfEIwf75F5ZI5enrsOHjHLAPZhzajslmbOD1V5gN7LqZ9yx3QnYNlK6XHMM6NtLmV5tnCnmxaaKi9EbihZVn0AfCv1sLZinjab3AotokBZ55sXqyM8zm3s27mPRKxoZD6L2UJwAI',
+    ingredients: [
+      {name: 'Bourbon 波本威士忌', amount: '45', unit: 'ml'},
+      {name: 'Lemon Juice 柠檬汁', amount: '25', unit: 'ml'},
+      {name: 'Sugar Syrup 糖浆', amount: '15', unit: 'ml'},
+      {name: 'Egg White 蛋清', amount: '1', unit: '个'}
+    ],
+    barware: ['coupe', 'shaker'],
+    steps: [
+      {step: 1, title: '干摇', desc: '将所有原料不加冰放入摇酒器，用力干摇10秒。'},
+      {step: 2, title: '加冰摇', desc: '加入冰块，继续摇和15秒至充分冷却。'},
+      {step: 3, title: '过滤', desc: '将酒液双重过滤倒入冰镇的 coupe 杯中。'},
+      {step: 4, title: '装饰', desc: '在泡沫上滴3滴安格斯特拉苦精做装饰。'}
+    ]
+  },
+  {
+    id: 'espressomartini',
+    name: 'Espresso Martini',
+    nameCn: '浓缩马天尼',
+    category: '现代',
+    tags: ['咖啡', '现代'],
+    rating: 4.6,
+    time: '5 MIN',
+    strength: 'Strong',
+    heroImg: 'https://images.unsplash.com/photo-1517701552459-26b6811537a1?w=800',
+    ingredients: [
+      {name: 'Vodka 伏特加', amount: '40', unit: 'ml'},
+      {name: 'Coffee Liqueur 咖啡利口酒', amount: '20', unit: 'ml'},
+      {name: 'Espresso 浓缩咖啡', amount: '30', unit: 'ml'},
+      {name: 'Sugar Syrup 糖浆', amount: '10', unit: 'ml'}
+    ],
+    barware: ['cocktail', 'shaker'],
+    steps: [
+      {step: 1, title: '准备', desc: '将鸡尾酒杯冰镇，准备新鲜浓缩咖啡并冷却。'},
+      {step: 2, title: '摇和', desc: '将所有原料放入摇酒器，加满冰块用力摇和。'},
+      {step: 3, title: '过滤', desc: '将酒液双重过滤倒入冰镇的鸡尾酒杯中。'},
+      {step: 4, title: '装饰', desc: '用3颗咖啡豆装饰在泡沫上。'}
+    ]
+  },
+  {
+    id: 'aperolspritz',
+    name: 'Aperol Spritz',
+    nameCn: '阿佩罗橙光',
+    category: '现代',
+    tags: ['果味', '清爽'],
+    rating: 4.3,
+    time: '3 MIN',
+    strength: 'Light',
+    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    ingredients: [
+      {name: 'Aperol 阿佩罗', amount: '60', unit: 'ml'},
+      {name: 'Prosecco 普罗塞克', amount: '90', unit: 'ml'},
+      {name: 'Soda Water 苏打水', amount: '30', unit: 'ml'},
+      {name: 'Orange Slice 橙片', amount: '1', unit: '片'}
+    ],
+    barware: ['wine', 'none'],
+    steps: [
+      {step: 1, title: '加冰', desc: '在高球杯或红酒杯中加满冰块。'},
+      {step: 2, title: '倒入', desc: '先倒入阿佩罗，再倒入普罗塞克气泡酒。'},
+      {step: 3, title: '补气', desc: '最后加入苏打水，轻轻搅拌。'},
+      {step: 4, title: '装饰', desc: '用新鲜橙片装饰即可。'}
+    ]
+  },
+  {
+    id: 'mocktail',
+    name: 'Virgin Mojito',
+    nameCn: '维珍莫吉托',
+    category: '无酒精',
+    tags: ['清爽', '果味'],
+    rating: 4.2,
+    time: '4 MIN',
+    strength: 'None',
+    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    ingredients: [
+      {name: 'Lime Juice 青柠汁', amount: '25', unit: 'ml'},
+      {name: 'Mint Leaves 薄荷叶', amount: '10', unit: '片'},
+      {name: 'Sugar Syrup 糖浆', amount: '20', unit: 'ml'},
+      {name: 'Soda Water 苏打水', amount: '适量', unit: ''}
+    ],
+    barware: ['collins', 'muddler'],
+    steps: [
+      {step: 1, title: '捣碎', desc: '在高球杯中轻轻捣碎薄荷叶和糖浆。'},
+      {step: 2, title: '加酸', desc: '挤入青柠汁，加满碎冰。'},
+      {step: 3, title: '补气', desc: '倒入苏打水至满杯，轻轻搅拌。'},
+      {step: 4, title: '装饰', desc: '用薄荷枝和青柠片装饰。'}
+    ]
+  }
+];
+
+// ==================== 酒柜数据 ====================
+let cellar = [
+  {id: 1, name: '茅台 飞天 2020', category: '白酒', cost: 1499, value: 3200, qty: 2, date: '2024-06-15'},
+  {id: 2, name: 'Macallan 18yr', category: '威士忌', cost: 2800, value: 3200, qty: 1, date: '2024-03-20'},
+  {id: 3, name: '拉菲 2016', category: '葡萄酒', cost: 6500, value: 7200, qty: 1, date: '2023-12-10'},
+  {id: 4, name: '五粮液 经典', category: '白酒', cost: 1399, value: 1399, qty: 1, date: '2024-09-01'}
+];
+
+// ==================== 导航逻辑 ====================
+let currentPage = 'menu';
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.dataset.page === page) {
+      btn.classList.add('text-amber-400', 'scale-110');
+      btn.classList.remove('text-stone-500', 'opacity-60');
+      btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1, 'wght' 400";
+    } else {
+      btn.classList.remove('text-amber-400', 'scale-110');
+      btn.classList.add('text-stone-500', 'opacity-60');
+      btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0, 'wght' 400";
+    }
+  });
+  
+  currentPage = page;
+  
+  if (page === 'mybar') renderCellar();
+}
+
+// ==================== 渲染配方网格 ====================
+function renderRecipes(filter = 'all', tag = 'all', search = '') {
+  const grid = document.getElementById('recipe-grid');
+  let filtered = recipes;
+  
+  if (filter !== 'all') {
+    filtered = filtered.filter(r => r.category === filter);
+  }
+  if (tag !== 'all') {
+    filtered = filtered.filter(r => r.tags.includes(tag));
+  }
+  if (search) {
+    const s = search.toLowerCase();
+    filtered = filtered.filter(r => r.name.toLowerCase().includes(s) || r.nameCn.includes(s) || r.tags.join('').includes(s));
+  }
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="md:col-span-12 text-center py-16 text-stone-500">没有找到匹配的配方</div>';
+    return;
+  }
+  
+  // 第一个特色显示大图
+  const featured = filtered[0];
+  let html = `
+    <div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-high aspect-[16/10] md:aspect-auto md:h-full cursor-pointer" onclick="showRecipeDetail('${featured.id}')">
+      <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="${featured.heroImg}" alt="${featured.name}"/>
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 p-6 w-full">
+        <div class="flex justify-between items-end">
+          <div>
+            <span class="text-tertiary font-label text-xs uppercase tracking-widest mb-2 block">${featured.category} / ${featured.tags.join(' / ')}</span>
+            <h3 class="text-2xl md:text-3xl font-display font-bold text-white mb-1">${featured.name}</h3>
+            <p class="text-stone-300 font-body text-sm">${featured.nameCn}</p>
+          </div>
+          <button class="bg-primary text-on-primary p-3 rounded-md shadow-lg transform active:scale-95 transition-all" onclick="event.stopPropagation(); showRecipeDetail('${featured.id}')">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // 其余卡片
+  filtered.slice(1).forEach(r => {
+    html += `
+      <div class="md:col-span-4 group flex flex-col bg-surface-container rounded-xl overflow-hidden shadow-xl cursor-pointer hover:bg-surface-container-high transition-colors" onclick="showRecipeDetail('${r.id}')">
+        <div class="relative h-40 overflow-hidden">
+          <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${r.heroImg}" alt="${r.name}"/>
+          <div class="absolute top-3 right-3 flex gap-1">
+            ${r.tags.slice(0, 2).map(t => `<span class="bg-stone-900/60 backdrop-blur-md text-tertiary px-2 py-0.5 rounded-full text-[9px] font-bold uppercase">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="text-lg font-display font-bold text-on-surface mb-1">${r.name}</h3>
+          <p class="text-on-surface-variant text-xs mb-2">${r.nameCn}</p>
+          <div class="flex items-center gap-3 text-xs text-stone-400">
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">star</span>${r.rating}</span>
+            <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">schedule</span>${r.time}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  grid.innerHTML = html;
+}
+
+// ==================== 配方详情 ====================
+function showRecipeDetail(id) {
+  const r = recipes.find(x => x.id === id);
+  if (!r) return;
+  
+  document.getElementById('detail-hero-img').src = r.heroImg;
+  document.getElementById('detail-category').textContent = r.category + ' / ' + r.tags.join(' / ');
+  document.getElementById('detail-name').textContent = r.name + ' · ' + r.nameCn;
+  document.getElementById('detail-rating').textContent = r.rating;
+  document.getElementById('detail-time').textContent = r.time;
+  document.getElementById('detail-strength').textContent = r.strength;
+  
+  // 配料
+  let ingHtml = '';
+  r.ingredients.forEach(ing => {
+    ingHtml += `
+      <label class="flex items-center gap-3 group cursor-pointer">
+        <input type="checkbox" class="w-4 h-4 rounded border-outline-variant bg-surface-container-highest text-primary focus:ring-primary/50"/>
+        <span class="font-body text-on-surface-variant group-hover:text-primary transition-colors text-sm">${ing.amount} ${ing.unit} ${ing.name}</span>
+      </label>
+    `;
+  });
+  document.getElementById('detail-ingredients').innerHTML = ingHtml;
+  
+  // 器具
+  const barwareMap = {
+    'rocks': {icon: 'liquor', label: '古典杯'},
+    'mixing': {icon: 'comedy_mask', label: '混合杯'},
+    'cocktail': {icon: 'wine_bar', label: '鸡尾酒杯'},
+    'shaker': {icon: 'silence', label: '摇酒器'},
+    'collins': {icon: 'glass_cup', label: '高球杯'},
+    'muddler': {icon: 'comedy_mask', label: '捣棒'},
+    'coupe': {icon: 'wine_bar', label: 'Coupe杯'},
+    'wine': {icon: 'wine_bar', label: '红酒杯'},
+    'none': {icon: 'liquor', label: '无'}
+  };
+  let barHtml = '';
+  r.barware.forEach(b => {
+    const info = barwareMap[b] || {icon: 'liquor', label: b};
+    barHtml += `
+      <div class="bg-surface-container-highest/30 p-3 rounded-xl flex flex-col items-center text-center gap-1">
+        <span class="material-symbols-outlined text-primary text-2xl">${info.icon}</span>
+        <span class="text-[10px] font-label uppercase tracking-widest text-stone-300">${info.label}</span>
+      </div>
+    `;
+  });
+  document.getElementById('detail-barware').innerHTML = barHtml;
+  
+  // 步骤
+  let stepsHtml = '';
+  r.steps.forEach((s, i) => {
+    const isLast = i === r.steps.length - 1;
+    stepsHtml += `
+      <div class="flex gap-6 group">
+        <div class="flex flex-col items-center">
+          <span class="w-9 h-9 rounded-full ${isLast ? 'border border-primary text-primary' : 'bg-primary text-on-primary'} flex items-center justify-center font-bold text-xs shadow-[0_0_15px_rgba(242,202,80,0.4)]">${String(s.step).padStart(2, '0')}</span>
+          ${!isLast ? '<div class="w-px flex-grow bg-outline-variant/20 mt-2"></div>' : ''}
+        </div>
+        <div class="${isLast ? '' : 'pb-6'}">
+          <h4 class="font-display text-lg text-primary-fixed-dim mb-1 uppercase tracking-wide">${s.title}</h4>
+          <p class="text-on-surface-variant leading-relaxed">${s.desc}</p>
+        </div>
+      </div>
+    `;
+  });
+  document.getElementById('detail-steps').innerHTML = stepsHtml;
+  
+  showPage('detail');
+}
+
+// ==================== 酒柜 ====================
+function renderCellar() {
+  const list = document.getElementById('mybar-list');
+  
+  document.getElementById('stat-total').textContent = cellar.reduce((s, x) => s + x.qty, 0);
+  document.getElementById('stat-value').textContent = '¥' + cellar.reduce((s, x) => s + x.value * x.qty, 0).toLocaleString();
+  
+  const totalCost = cellar.reduce((s, x) => s + x.cost * x.qty, 0);
+  const totalValue = cellar.reduce((s, x) => s + x.value * x.qty, 0);
+  const change = totalCost > 0 ? ((totalValue - totalCost) / totalCost * 100).toFixed(1) : 0;
+  const changeEl = document.getElementById('stat-change');
+  changeEl.textContent = (change >= 0 ? '+' : '') + change + '%';
+  changeEl.className = 'text-2xl font-display ' + (change >= 0 ? 'text-green-400' : 'text-red-400');
+  
+  if (cellar.length === 0) {
+    list.innerHTML = '<div class="text-center py-12 text-stone-500">暂无藏酒，点击"添加藏酒"开始</div>';
+    return;
+  }
+  
+  let html = '<div class="flex gap-4 px-4 pb-2 text-stone-500 text-[10px] uppercase tracking-[0.2em] font-bold"><span class="flex-1">酒名</span><span class="w-24 text-right">购入价</span><span class="w-24 text-right">当前估值</span></div>';
+  
+  cellar.forEach(item => {
+    const diff = item.value - item.cost;
+    const diffPct = item.cost > 0 ? ((diff / item.cost) * 100).toFixed(1) : 0;
+    html += `
+      <div class="group flex items-center justify-between p-4 rounded-xl bg-surface-container hover:bg-surface-container-high transition-all duration-300 cursor-pointer">
+        <div class="flex items-center gap-4 flex-1">
+          <div class="w-12 h-12 rounded-lg bg-surface-container-lowest flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary">liquor</span>
+          </div>
+          <div>
+            <h4 class="font-headline text-base text-on-surface">${item.name}</h4>
+            <p class="text-tertiary text-[10px] font-label tracking-widest uppercase">${item.category} · Qty: ${item.qty}</p>
+          </div>
+        </div>
+        <div class="flex gap-12 items-center">
+          <div class="w-24 text-right"><span class="text-on-surface-variant font-body text-sm">¥${(item.cost * item.qty).toLocaleString()}</span></div>
+          <div class="w-24 text-right">
+            <span class="text-primary font-body font-bold text-sm">¥${(item.value * item.qty).toLocaleString()}</span>
+            <p class="text-[10px] ${diff >= 0 ? 'text-green-400' : 'text-red-400'}">${diff >= 0 ? '+' : ''}${diffPct}%</p>
+          </div>
+          <button onclick="deleteSpirit(${item.id})" class="opacity-0 group-hover:opacity-100 text-stone-500 hover:text-red-400 transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
+        </div>
+      </div>
+    `;
+  });
+  
+  list.innerHTML = html;
+}
+
+// ==================== 添加/删除藏酒 ====================
+function openAddSpiritModal() {
+  document.getElementById('add-spirit-modal').classList.remove('hidden');
+}
+
+function closeAddSpiritModal() {
+  document.getElementById('add-spirit-modal').classList.add('hidden');
+  document.getElementById('spirit-name').value = '';
+  document.getElementById('spirit-cost').value = '';
+  document.getElementById('spirit-value').value = '';
+  document.getElementById('spirit-qty').value = 1;
+}
+
+function saveSpirit() {
+  const name = document.getElementById('spirit-name').value.trim();
+  const category = document.getElementById('spirit-category').value;
+  const cost = parseFloat(document.getElementById('spirit-cost').value) || 0;
+  const value = parseFloat(document.getElementById('spirit-value').value) || cost;
+  const qty = parseInt(document.getElementById('spirit-qty').value) || 1;
+  
+  if (!name) {
+    alert('请输入酒名');
+    return;
+  }
+  
+  cellar.push({
+    id: Date.now(),
+    name,
+    category,
+    cost,
+    value,
+    qty,
+    date: new Date().toISOString().slice(0, 10)
+  });
+  
+  closeAddSpiritModal();
+  renderCellar();
+}
+
+function deleteSpirit(id) {
+  if (!confirm('确定删除这件藏酒？')) return;
+  cellar = cellar.filter(x => x.id !== id);
+  renderCellar();
+}
+
+// ==================== 事件绑定 ====================
+document.addEventListener('DOMContentLoaded', () => {
+  // 底部导航
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.page));
+  });
+  
+  // 返回酒单
+  document.getElementById('back-to-menu').addEventListener('click', () => showPage('menu'));
+  
+  // 分类过滤
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        b.classList.add('bg-surface-container', 'text-on-surface-variant');
+      });
+      btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+      btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+      renderRecipes(btn.dataset.filter, document.querySelector('.tag-btn.bg-secondary-container')?.dataset.tag || 'all', document.getElementById('search-input').value);
+    });
+  });
+  
+  // 标签过滤
+  document.querySelectorAll('.tag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tag-btn').forEach(b => {
+        b.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+        b.classList.add('border', 'border-outline-variant/30', 'text-on-surface-variant');
+      });
+      btn.classList.remove('border', 'border-outline-variant/30', 'text-on-surface-variant');
+      btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+      renderRecipes(document.querySelector('.filter-btn.bg-secondary-container')?.dataset.filter || 'all', btn.dataset.tag, document.getElementById('search-input').value);
+    });
+  });
+  
+  // 搜索
+  document.getElementById('search-input').addEventListener('input', (e) => {
+    renderRecipes(
+      document.querySelector('.filter-btn.bg-secondary-container')?.dataset.filter || 'all',
+      document.querySelector('.tag-btn.bg-secondary-container')?.dataset.tag || 'all',
+      e.target.value
+    );
+  });
+  
+  // 添加藏酒
+  document.getElementById('add-spirit-btn').addEventListener('click', openAddSpiritModal);
+  
+  // 初始渲染
+  renderRecipes();
+  renderCellar();
+});
+</script>
+</body>
+</html>
