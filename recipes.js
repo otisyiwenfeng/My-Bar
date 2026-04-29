@@ -1,3 +1,4 @@
+console.log('recipes.js loaded, recipes count:', typeof recipes !== 'undefined' ? recipes.length : 'undefined');
 var recipes = [
   // ===== 经典 Classic (20) =====
   {

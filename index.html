@@ -402,6 +402,7 @@ function showPage(page) {
 
 // ==================== 渲染配方网格 ====================
 function renderRecipes(filter = 'all', tag = 'all', search = '') {
+  console.log('renderRecipes called, recipes length:', typeof recipes !== 'undefined' ? recipes.length : 'undefined');
   const grid = document.getElementById('recipe-grid');
   let filtered = recipes;
   
