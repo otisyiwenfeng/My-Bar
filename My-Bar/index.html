@@ -399,7 +399,7 @@ const recipes = [
     rating: 4.7,
     time: '6 MIN',
     strength: 'Light',
-    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    heroImg: 'assets/cocktail_mojito.png',
     ingredients: [
       {name: 'White Rum 白朗姆', amount: '45', unit: 'ml'},
       {name: 'Fresh Lime Juice 青柠汁', amount: '25', unit: 'ml'},
@@ -424,7 +424,7 @@ const recipes = [
     rating: 4.6,
     time: '5 MIN',
     strength: 'Medium',
-    heroImg: 'https://images.unsplash.com/photo-1563213126-a4273aed6594?w=800',
+    heroImg: 'assets/cocktail_margarita.png',
     ingredients: [
       {name: 'Tequila 龙舌兰', amount: '45', unit: 'ml'},
       {name: 'Cointreau 君度', amount: '20', unit: 'ml'},
@@ -473,7 +473,7 @@ const recipes = [
     rating: 4.7,
     time: '5 MIN',
     strength: 'Strong',
-    heroImg: 'https://images.unsplash.com/photo-1470337459683-829a830cd0b9?w=800',
+    heroImg: 'assets/cocktail_manhattan.png',
     ingredients: [
       {name: 'Rye Whiskey 黑麦威士忌', amount: '50', unit: 'ml'},
       {name: 'Sweet Vermouth 甜苦艾酒', amount: '20', unit: 'ml'},
@@ -544,7 +544,7 @@ const recipes = [
     rating: 4.6,
     time: '5 MIN',
     strength: 'Strong',
-    heroImg: 'https://images.unsplash.com/photo-1517701552459-26b6811537a1?w=800',
+    heroImg: 'assets/cocktail_espresso_martini.png',
     ingredients: [
       {name: 'Vodka 伏特加', amount: '40', unit: 'ml'},
       {name: 'Coffee Liqueur 咖啡利口酒', amount: '20', unit: 'ml'},
@@ -568,7 +568,7 @@ const recipes = [
     rating: 4.3,
     time: '3 MIN',
     strength: 'Light',
-    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    heroImg: 'assets/cocktail_aperol_spritz.png',
     ingredients: [
       {name: 'Aperol 阿佩罗', amount: '60', unit: 'ml'},
       {name: 'Prosecco 普罗塞克', amount: '90', unit: 'ml'},
@@ -592,7 +592,7 @@ const recipes = [
     rating: 4.2,
     time: '4 MIN',
     strength: 'None',
-    heroImg: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=800',
+    heroImg: 'assets/cocktail_virgin_mojito.png',
     ingredients: [
       {name: 'Lime Juice 青柠汁', amount: '25', unit: 'ml'},
       {name: 'Mint Leaves 薄荷叶', amount: '10', unit: '片'},
@@ -666,7 +666,7 @@ function renderRecipes(filter = 'all', tag = 'all', search = '') {
   const featured = filtered[0];
   let html = `
     <div class="md:col-span-8 group relative overflow-hidden rounded-xl bg-surface-container-high aspect-[16/10] md:aspect-auto md:h-full cursor-pointer" onclick="showRecipeDetail('${featured.id}')">
-      <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="${featured.heroImg}" alt="${featured.name}"/>
+      <img class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" src="${featured.heroImg}" onerror="this.src='https://via.placeholder.com/800x500/1c1b1b/c9a84c?text='+encodeURIComponent('${featured.name}')" alt="${featured.name}"/>
       <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent"></div>
       <div class="absolute bottom-0 left-0 p-6 w-full">
         <div class="flex justify-between items-end">
@@ -688,7 +688,7 @@ function renderRecipes(filter = 'all', tag = 'all', search = '') {
     html += `
       <div class="md:col-span-4 group flex flex-col bg-surface-container rounded-xl overflow-hidden shadow-xl cursor-pointer hover:bg-surface-container-high transition-colors" onclick="showRecipeDetail('${r.id}')">
         <div class="relative h-40 overflow-hidden">
-          <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${r.heroImg}" alt="${r.name}"/>
+          <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="${r.heroImg}" onerror="this.src='https://via.placeholder.com/400x200/1c1b1b/c9a84c?text='+encodeURIComponent('${r.name}')" alt="${r.name}"/>
           <div class="absolute top-3 right-3 flex gap-1">
             ${r.tags.slice(0, 2).map(t => `<span class="bg-stone-900/60 backdrop-blur-md text-tertiary px-2 py-0.5 rounded-full text-[9px] font-bold uppercase">${t}</span>`).join('')}
           </div>
@@ -714,6 +714,7 @@ function showRecipeDetail(id) {
   if (!r) return;
   
   document.getElementById('detail-hero-img').src = r.heroImg;
+  document.getElementById('detail-hero-img').onerror = function() { this.src='https://via.placeholder.com/800x500/1c1b1b/c9a84c?text='+encodeURIComponent(r.name); };
   document.getElementById('detail-category').textContent = r.category + ' / ' + r.tags.join(' / ');
   document.getElementById('detail-name').textContent = r.name + ' · ' + r.nameCn;
   document.getElementById('detail-rating').textContent = r.rating;
