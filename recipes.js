@@ -1,4 +1,4 @@
-const recipes = [
+var recipes = [
   // ===== 经典 Classic (20) =====
   {
     id: 'negroni',
@@ -867,3 +867,6 @@ const recipes = [
     ]
   }
 ];
+
+// 确保全局可访问
+window.recipes = recipes;
