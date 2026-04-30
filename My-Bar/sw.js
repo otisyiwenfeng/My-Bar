@@ -3,7 +3,6 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './assets/',
 ];
 
 // Install: cache core assets
